@@ -75,7 +75,44 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="autotoc_md0"></a></p>
-<p>A mini-shell for a CNAM Student Project </p>
+<p>A mini-shell for a CNAM Student Project.</p>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md1"></a>
+Overview</h1>
+<p>MiShell is a simple command-line shell implemented in C. It supports basic built-in commands and can execute external programs.</p>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md2"></a>
+Features</h1>
+<ul>
+<li>Built-in commands: <span class="tt">cd</span>, <span class="tt">pwd</span>, <span class="tt">echo</span>, <span class="tt">exit</span></li>
+<li>Execution of external commands</li>
+<li>Error handling for invalid commands</li>
+</ul>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md3"></a>
+Building</h1>
+<p>Ensure you have <span class="tt">gcc</span> and <span class="tt">make</span> installed. On Windows, use MinGW or switch to WSL/Cygwin for full POSIX support.</p>
+<div class="fragment"><div class="line">make all</div>
+</div><!-- fragment --><p>This compiles the source files and links them into <span class="tt">./bin/MiShell</span>.</p>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md4"></a>
+Usage</h1>
+<p>Run the shell:</p>
+<div class="fragment"><div class="line">./bin/MiShell</div>
+</div><!-- fragment --><p>Enter commands at the prompt (e.g., <span class="tt">pwd</span>, <span class="tt">ls</span>, <span class="tt">cd /path</span>, <span class="tt">exit</span>).</p>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md5"></a>
+Project Structure</h1>
+<ul>
+<li><span class="tt">src/</span>: Source code files</li>
+<li><span class="tt">include/</span>: Header files</li>
+<li><span class="tt">bin/</span>: Compiled executable</li>
+<li><span class="tt">doc/</span>: Generated documentation (run <span class="tt">make doc</span> to update)</li>
+</ul>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md6"></a>
+Dependencies</h1>
+<ul>
+<li>Standard C libraries (stdio, stdlib, etc.)</li>
+<li>POSIX functions (fork, wait) – requires Unix-like environment</li>
+</ul>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md7"></a>
+License</h1>
+<p>See [LICENSE](LICENSE). </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 <!-- start footer part -->

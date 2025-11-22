@@ -4,4 +4,44 @@
 \Hypertarget{md_README_autotoc_md0}%
 
 
-A mini-\/shell for a CNAM Student Project 
+A mini-\/shell for a CNAM Student Project.\hypertarget{md_README_autotoc_md1}{}\doxysection{\texorpdfstring{Overview}{Overview}}\label{md_README_autotoc_md1}
+Mi\+Shell is a simple command-\/line shell implemented in C. It supports basic built-\/in commands and can execute external programs.\hypertarget{md_README_autotoc_md2}{}\doxysection{\texorpdfstring{Features}{Features}}\label{md_README_autotoc_md2}
+
+\begin{DoxyItemize}
+\item Built-\/in commands\+: {\ttfamily cd}, {\ttfamily pwd}, {\ttfamily echo}, {\ttfamily exit}
+\item Execution of external commands
+\item Error handling for invalid commands
+\end{DoxyItemize}\hypertarget{md_README_autotoc_md3}{}\doxysection{\texorpdfstring{Building}{Building}}\label{md_README_autotoc_md3}
+Ensure you have {\ttfamily gcc} and {\ttfamily make} installed. On Windows, use Min\+GW or switch to WSL/\+Cygwin for full POSIX support.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{make\ all}
+
+\end{DoxyCode}
+
+
+This compiles the source files and links them into {\ttfamily ./bin/\+Mi\+Shell}.\hypertarget{md_README_autotoc_md4}{}\doxysection{\texorpdfstring{Usage}{Usage}}\label{md_README_autotoc_md4}
+Run the shell\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{./bin/MiShell}
+
+\end{DoxyCode}
+
+
+Enter commands at the prompt (e.\+g., {\ttfamily pwd}, {\ttfamily ls}, {\ttfamily cd /path}, {\ttfamily exit}).\hypertarget{md_README_autotoc_md5}{}\doxysection{\texorpdfstring{Project Structure}{Project Structure}}\label{md_README_autotoc_md5}
+
+\begin{DoxyItemize}
+\item {\ttfamily src/}\+: Source code files
+\item {\ttfamily include/}\+: Header files
+\item {\ttfamily bin/}\+: Compiled executable
+\item {\ttfamily doc/}\+: Generated documentation (run {\ttfamily make doc} to update)
+\end{DoxyItemize}\hypertarget{md_README_autotoc_md6}{}\doxysection{\texorpdfstring{Dependencies}{Dependencies}}\label{md_README_autotoc_md6}
+
+\begin{DoxyItemize}
+\item Standard C libraries (stdio, stdlib, etc.)
+\item POSIX functions (fork, wait) – requires Unix-\/like environment
+\end{DoxyItemize}\hypertarget{md_README_autotoc_md7}{}\doxysection{\texorpdfstring{License}{License}}\label{md_README_autotoc_md7}
+See \mbox{[}LICENSE\mbox{]}(LICENSE). 

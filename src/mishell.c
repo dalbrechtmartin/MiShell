@@ -4,6 +4,9 @@
 
 #include "../include/functions.h"
 
+/** @brief Main entry point for the MiShell program.
+ *  @return EXIT_SUCCESS on normal termination.
+ */
 int main(int argc, char **argv)
 {
     char line[BUFFER_MAX_SIZE];
