@@ -1,10 +1,20 @@
 \doxysection{libs.\+h}
 \hypertarget{libs_8h_source}{}\label{libs_8h_source}\index{include/libs.h@{include/libs.h}}
-
+\mbox{\hyperlink{libs_8h}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
 \DoxyCodeLine{00001\ }
-\DoxyCodeLine{00002\ }
-\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <stdio.h>}}
-\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <stdlib.h>}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <stdio.h>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <stdlib.h>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <string.h>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <errno.h>}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#if\ defined(\_WIN32)\ ||\ defined(\_WIN64)}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <io.h>}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ <process.h>}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ <unistd.h>}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ <sys/wait.h>}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#endif}}
 
 \end{DoxyCode}

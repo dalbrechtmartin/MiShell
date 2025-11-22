@@ -6,20 +6,18 @@
 
 int main(int argc, char **argv)
 {
-    int status = SUCCESS;
     char line[BUFFER_MAX_SIZE];
 
-    while (status == SUCCESS)
+    while (1)
     {
         printf("MiShell> $ ");
         if (fgets(line, BUFFER_MAX_SIZE, stdin) == NULL)
         {
-            status = FAILURE;
             break;
         }
         else
         {
-            line[strcspn(line, "\n")] = 0; // Delete newline character
+            execute_command(line);
         }
     }
     exit_cmd();

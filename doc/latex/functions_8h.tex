@@ -1,0 +1,159 @@
+\doxysection{include/functions.h File Reference}
+\hypertarget{functions_8h}{}\label{functions_8h}\index{include/functions.h@{include/functions.h}}
+
+
+Contains the declarations of the built-\/in shell functions.  
+
+
+{\ttfamily \#include "{}libs.\+h"{}}\newline
+{\ttfamily \#include "{}typedef.\+h"{}}\newline
+Include dependency graph for functions.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{functions_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=250pt]{functions_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{functions_8h_a38992c8bfbd4d83469f0b73a3a20e59f}{cd\+\_\+cmd}} (char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}args)
+\begin{DoxyCompactList}\small\item\em Changes the current directory. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{functions_8h_a16f927816b5eee716ff2ebcbcb229cdd}{pwd\+\_\+cmd}} ()
+\begin{DoxyCompactList}\small\item\em Prints the current working directory. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{functions_8h_aaba64aa13f9e6a8737cb9dccf673dc56}{echo\+\_\+cmd}} (char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}args)
+\begin{DoxyCompactList}\small\item\em Prints the given arguments to the standard output. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{functions_8h_af7eac76b32b0e9587cab2c2a402e6fc7}{exit\+\_\+cmd}} ()
+\begin{DoxyCompactList}\small\item\em Exits the shell. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{functions_8h_a9b4b7070fc42f2414c69cdba7685ef8e}{execute\+\_\+command}} (char \texorpdfstring{$\ast$}{*}line)
+\begin{DoxyCompactList}\small\item\em Execute the valids commands. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Contains the declarations of the built-\/in shell functions. 
+
+
+
+\label{doc-func-members}
+\Hypertarget{functions_8h_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{functions_8h_a38992c8bfbd4d83469f0b73a3a20e59f}\index{functions.h@{functions.h}!cd\_cmd@{cd\_cmd}}
+\index{cd\_cmd@{cd\_cmd}!functions.h@{functions.h}}
+\doxysubsubsection{\texorpdfstring{cd\_cmd()}{cd\_cmd()}}
+{\footnotesize\ttfamily \label{functions_8h_a38992c8bfbd4d83469f0b73a3a20e59f} 
+int cd\+\_\+cmd (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{args}{}\end{DoxyParamCaption})}
+
+
+
+Changes the current directory. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em args} & Array of arguments where args\mbox{[}1\mbox{]} is the target directory. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+SUCCESS on success, FAILURE on failure.
+\end{DoxyReturn}
+\hypertarget{functions_8c_BUILTIN_COMMANDS}{}\doxysubsection{\texorpdfstring{Built-\/in Commands}{Built-\/in Commands}}\label{functions_8c_BUILTIN_COMMANDS}
+This section contains implementations of built-\/in shell commands. \hypertarget{functions_8c_CD_COMMAND}{}\doxysubsubsection{\texorpdfstring{CD Command}{CD Command}}\label{functions_8c_CD_COMMAND}
+Implementation of the cd command. 
+\begin{DoxyParams}{Parameters}
+{\em args} & Array of arguments where args\mbox{[}1\mbox{]} is the target directory. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+SUCCESS on success, FAILURE on failure. 
+\end{DoxyReturn}
+\Hypertarget{functions_8h_aaba64aa13f9e6a8737cb9dccf673dc56}\index{functions.h@{functions.h}!echo\_cmd@{echo\_cmd}}
+\index{echo\_cmd@{echo\_cmd}!functions.h@{functions.h}}
+\doxysubsubsection{\texorpdfstring{echo\_cmd()}{echo\_cmd()}}
+{\footnotesize\ttfamily \label{functions_8h_aaba64aa13f9e6a8737cb9dccf673dc56} 
+int echo\+\_\+cmd (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{args}{}\end{DoxyParamCaption})}
+
+
+
+Prints the given arguments to the standard output. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em args} & Array of arguments to be printed. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+SUCCESS on success, FAILURE on failure.
+\end{DoxyReturn}
+\hypertarget{functions_8c_ECHO_COMMAND}{}\doxysubsubsection{\texorpdfstring{ECHO Command}{ECHO Command}}\label{functions_8c_ECHO_COMMAND}
+Implementation of the echo command. 
+\begin{DoxyParams}{Parameters}
+{\em args} & Array of arguments to be printed. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+SUCCESS on success, FAILURE on failure. 
+\end{DoxyReturn}
+\Hypertarget{functions_8h_a9b4b7070fc42f2414c69cdba7685ef8e}\index{functions.h@{functions.h}!execute\_command@{execute\_command}}
+\index{execute\_command@{execute\_command}!functions.h@{functions.h}}
+\doxysubsubsection{\texorpdfstring{execute\_command()}{execute\_command()}}
+{\footnotesize\ttfamily \label{functions_8h_a9b4b7070fc42f2414c69cdba7685ef8e} 
+int execute\+\_\+command (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}}]{line}{}\end{DoxyParamCaption})}
+
+
+
+Execute the valids commands. 
+
+\begin{DoxyReturn}{Returns}
+SUCCESS on success, FAILURE on failure.
+\end{DoxyReturn}
+Execute the valids commands.
+
+@endsection \hypertarget{functions_8c_BASIC_FUNCTIONS}{}\doxysubsection{\texorpdfstring{Basic Functions}{Basic Functions}}\label{functions_8c_BASIC_FUNCTIONS}
+This section contains implementations of basic functions used by the shell. 
+\begin{DoxyParams}{Parameters}
+{\em line} & User input. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+SUCCESS on success, FAILURE on failure. 
+\end{DoxyReturn}
+\Hypertarget{functions_8h_af7eac76b32b0e9587cab2c2a402e6fc7}\index{functions.h@{functions.h}!exit\_cmd@{exit\_cmd}}
+\index{exit\_cmd@{exit\_cmd}!functions.h@{functions.h}}
+\doxysubsubsection{\texorpdfstring{exit\_cmd()}{exit\_cmd()}}
+{\footnotesize\ttfamily \label{functions_8h_af7eac76b32b0e9587cab2c2a402e6fc7} 
+int exit\+\_\+cmd (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Exits the shell. 
+
+\begin{DoxyReturn}{Returns}
+EXIT\+\_\+\+SUCCESS.
+\end{DoxyReturn}
+\hypertarget{functions_8c_EXIT_COMMAND}{}\doxysubsubsection{\texorpdfstring{EXIT Command}{EXIT Command}}\label{functions_8c_EXIT_COMMAND}
+Implementation of the exit command. \begin{DoxyReturn}{Returns}
+EXIT\+\_\+\+SUCCESS. 
+\end{DoxyReturn}
+\Hypertarget{functions_8h_a16f927816b5eee716ff2ebcbcb229cdd}\index{functions.h@{functions.h}!pwd\_cmd@{pwd\_cmd}}
+\index{pwd\_cmd@{pwd\_cmd}!functions.h@{functions.h}}
+\doxysubsubsection{\texorpdfstring{pwd\_cmd()}{pwd\_cmd()}}
+{\footnotesize\ttfamily \label{functions_8h_a16f927816b5eee716ff2ebcbcb229cdd} 
+int pwd\+\_\+cmd (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Prints the current working directory. 
+
+\begin{DoxyReturn}{Returns}
+SUCCESS on success, FAILURE on failure.
+\end{DoxyReturn}
+\hypertarget{functions_8c_PWD_COMMAND}{}\doxysubsubsection{\texorpdfstring{PWD Command}{PWD Command}}\label{functions_8c_PWD_COMMAND}
+Implementation of the pwd command. \begin{DoxyReturn}{Returns}
+SUCCESS on success, FAILURE on failure. 
+\end{DoxyReturn}

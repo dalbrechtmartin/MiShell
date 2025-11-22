@@ -26,3 +26,8 @@ int echo_cmd(char **args);
  * @return EXIT_SUCCESS.
  */
 int exit_cmd();
+
+/** @brief Execute the valids commands.
+ * @return SUCCESS on success, FAILURE on failure.
+ */
+int execute_command(char *line);
