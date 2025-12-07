@@ -27,21 +27,25 @@ int echo_cmd(char **args);
  */
 int exit_cmd();
 
-/** @brief Parses a command line into a ParsedCommand structure.
- * @param line The command line input.
- * @param result Pointer to a ParsedCommand structure to store the parsed result.
+/** @brief Parses an input line into up to MAX_CMDS commands.
+ * Splits only on the logical operator "&&"; leaves pipes intact to be handled
+ * downstream. Background execution is detected via a trailing '&'.
+ * @param line Raw input line (will not be modified).
+ * @param result Destination structure for parsed commands and operators.
  */
 void parse_command(char *line, ParsedCommand *result);
 
-/** @brief Execute the parsed commands.
- * @param command Pointer to the parsed command structure.
- * @return SUCCESS on success, FAILURE on failure.
+/** @brief Execute the ParsedCommand produced by parse_command.
+ * Runs single commands directly or multiple commands sequentially.
+ * @param command Parsed command bundle to execute.
+ * @return SUCCESS on success, FAILURE if any command fails.
  */
 int execute_command(ParsedCommand *command);
 
-/** @brief Execute a single command with redirections.
- * @param cmd Pointer to the command to execute.
- * @param background 1 if background, 0 otherwise.
+/** @brief Execute one command (builtin, pipeline, or external) with redirections.
+ * Pipelines are delegated to `sh -c` when present in `pipeline_cmd`.
+ * @param cmd Command to execute.
+ * @param background 1 to avoid waiting, 0 to wait for completion.
  * @return SUCCESS on success, FAILURE on failure.
  */
 int execute_single_command(Command *cmd, int background);

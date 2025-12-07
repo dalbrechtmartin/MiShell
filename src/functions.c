@@ -4,6 +4,119 @@
 
 #include "../include/functions.h"
 
+/**
+ * @brief Zero-initialize a Command structure.
+ * @param cmd Command to reset.
+ */
+static void init_command(Command *cmd)
+{
+    memset(cmd, 0, sizeof(*cmd));
+}
+
+/**
+ * @brief Apply input/output redirections for a command.
+ * @param cmd Command holding redirection targets.
+ * @return SUCCESS on success, FAILURE otherwise.
+ */
+static int apply_command_redirections(Command *cmd)
+{
+    if (cmd->input_file)
+    {
+        int input_fd = open(cmd->input_file, O_RDONLY);
+        if (input_fd == -1)
+        {
+            perror("open input");
+            return FAILURE;
+        }
+        dup2(input_fd, STDIN_FILENO);
+        close(input_fd);
+    }
+
+    if (cmd->output_file)
+    {
+        int flags = O_WRONLY | O_CREAT | (cmd->output_append ? O_APPEND : O_TRUNC);
+        int output_fd = open(cmd->output_file, flags, 0644);
+        if (output_fd == -1)
+        {
+            perror("open output");
+            return FAILURE;
+        }
+        dup2(output_fd, STDOUT_FILENO);
+        close(output_fd);
+    }
+    return SUCCESS;
+}
+
+/**
+ * @brief Wait for a child unless running in background.
+ * @param child_pid PID returned by fork.
+ * @param background 1 to skip waiting, 0 to wait.
+ * @return SUCCESS if child exited with 0, otherwise FAILURE.
+ */
+static int run_child_and_wait(pid_t child_pid, int background)
+{
+    if (child_pid < 0)
+    {
+        perror("fork");
+        return FAILURE;
+    }
+    if (background)
+    {
+        return SUCCESS;
+    }
+    int child_status;
+    wait(&child_status);
+    if (WIFEXITED(child_status) && WEXITSTATUS(child_status) == 0)
+    {
+        return SUCCESS;
+    }
+    return FAILURE;
+}
+
+/**
+ * @brief Execute a pipeline (pipeline_cmd) via sh -c.
+ * @param cmd Command containing pipeline_cmd and optional redirections.
+ * @param background 1 to run without waiting, 0 to wait.
+ * @return SUCCESS on success, FAILURE otherwise.
+ */
+static int run_pipeline_command(Command *cmd, int background)
+{
+    pid_t child_pid = fork();
+    if (child_pid == 0)
+    {
+        if (apply_command_redirections(cmd) != SUCCESS)
+        {
+            exit(EXIT_FAILURE);
+        }
+        execlp("sh", "sh", "-c", cmd->pipeline_cmd, (char *)NULL);
+        perror("exec sh");
+        exit(EXIT_FAILURE);
+    }
+    return run_child_and_wait(child_pid, background);
+}
+
+/**
+ * @brief Execute a non-builtin command with execvp.
+ * @param cmd Command containing args and optional redirections.
+ * @param background 1 to run without waiting, 0 to wait.
+ * @return SUCCESS on success, FAILURE otherwise.
+ */
+static int run_external_command(Command *cmd, int background)
+{
+    pid_t child_pid = fork();
+    if (child_pid == 0)
+    {
+        if (apply_command_redirections(cmd) != SUCCESS)
+        {
+            exit(EXIT_FAILURE);
+        }
+        execvp(cmd->args[0], cmd->args);
+        fprintf(stderr, "Command not found: %s\n", cmd->args[0]);
+        exit(EXIT_FAILURE);
+    }
+    return run_child_and_wait(child_pid, background);
+}
+
 /** @brief Changes the current directory.
  * @param args Array of arguments where args[1] is the target directory.
  * @return SUCCESS on success, FAILURE on failure.
@@ -63,7 +176,80 @@ int exit_cmd()
     exit(EXIT_SUCCESS);
 }
 
+/**
+ * @brief Parse one command string into a Command structure.
+ * Handles tokenization, input/output redirection detection.
+ * @param cmd_str Command string to parse.
+ * @param cmd Command structure to fill.
+ */
+static void parse_single_command(char *cmd_str, Command *cmd)
+{
+    init_command(cmd);
+
+    // Whitespace
+    while (*cmd_str && isspace((unsigned char)*cmd_str))
+        cmd_str++;
+
+    // Trailing whitespace
+    char *end = cmd_str + strlen(cmd_str) - 1;
+    while (end >= cmd_str && isspace((unsigned char)*end))
+        *end-- = '\0';
+
+    if (*cmd_str == '\0')
+        return;
+
+    // Check if command contains pipes
+    if (strchr(cmd_str, '|'))
+    {
+        cmd->pipeline_cmd = strdup(cmd_str);
+        return;
+    }
+
+    // Tokenize the command string
+    char *copy = strdup(cmd_str);
+    int arg_idx = 0;
+    char *token = strtok(copy, " ");
+
+    while (token && arg_idx < BUFFER_MAX_SIZE - 1)
+    {
+        if (strcmp(token, "<") == 0)
+        {
+            token = strtok(NULL, " ");
+            if (token)
+                cmd->input_file = strdup(token);
+        }
+        else if (strcmp(token, ">") == 0)
+        {
+            token = strtok(NULL, " ");
+            if (token)
+            {
+                cmd->output_file = strdup(token);
+                cmd->output_append = 0;
+            }
+        }
+        else if (strcmp(token, ">>") == 0)
+        {
+            token = strtok(NULL, " ");
+            if (token)
+            {
+                cmd->output_file = strdup(token);
+                cmd->output_append = 1;
+            }
+        }
+        else
+        {
+            cmd->args[arg_idx++] = strdup(token);
+        }
+        token = strtok(NULL, " ");
+    }
+    cmd->args[arg_idx] = NULL;
+    cmd->num_args = arg_idx;
+
+    free(copy);
+}
+
 /** @brief Parses a command line into a ParsedCommand structure.
+ * Splits only on "&&"; pipes are kept inside commands.
  * @param line The command line input.
  * @param result Pointer to a ParsedCommand structure to store the parsed result.
  */
@@ -71,124 +257,51 @@ void parse_command(char *line, ParsedCommand *result)
 {
     memset(result, 0, sizeof(*result));
     for (int i = 0; i < MAX_CMDS - 1; i++)
-    {
         result->ops[i] = OP_NONE;
-    }
 
-    char *copy = strdup(line);
-    if (!copy)
+    char *line_copy = strdup(line);
+    if (!line_copy)
     {
         perror("Memory error");
         exit(EXIT_FAILURE);
     }
-    copy[strcspn(copy, "\n")] = 0;
 
-    // Background detection: ignore trailing '&' while keeping logical operators intact
-    char *bg = strrchr(copy, '&');
-    if (bg && (bg == copy || *(bg - 1) != '&'))
+    // Remove newline
+    line_copy[strcspn(line_copy, "\n")] = '\0';
+
+    // &
+    char *bg_ptr = strrchr(line_copy, '&');
+    if (bg_ptr && (bg_ptr == line_copy || *(bg_ptr - 1) != '&'))
     {
-        *bg = '\0';
+        *bg_ptr = '\0';
         result->is_background = 1;
     }
 
-    char *cursor = copy;
-    while (*cursor != '\0' && result->num_cmds < MAX_CMDS)
+    // Split on &&
+    char *cmd_str = line_copy;
+    while (*cmd_str && result->num_cmds < MAX_CMDS)
     {
-        while (isspace((unsigned char)*cursor))
+        char *and_pos = strstr(cmd_str, "&&");
+
+        if (and_pos)
+            *and_pos = '\0';
+
+        parse_single_command(cmd_str, &result->cmds[result->num_cmds]);
+
+        if (result->cmds[result->num_cmds].args[0] != NULL ||
+            result->cmds[result->num_cmds].pipeline_cmd != NULL)
         {
-            cursor++;
+            result->num_cmds++;
+            if (and_pos && result->num_cmds < MAX_CMDS)
+                result->ops[result->num_cmds - 1] = OP_AND;
         }
-        if (*cursor == '\0')
-        {
+
+        if (!and_pos)
             break;
-        }
-
-        // Split only on "&&"; everything else (including pipes) stays inside the command
-        char *op_pos = strstr(cursor, "&&");
-        char *segment = cursor;
-        char *next = op_pos ? op_pos + 2 : cursor + strlen(cursor);
-        if (op_pos)
-        {
-            *op_pos = '\0';
-        }
-
-        // Trim right-side spaces from the segment
-        char *end = segment + strlen(segment);
-        while (end > segment && isspace((unsigned char)*(end - 1)))
-        {
-            *(--end) = '\0';
-        }
-
-        if (*segment == '\0')
-        {
-            cursor = next;
-            continue;
-        }
-
-        Command *cmd = &result->cmds[result->num_cmds];
-        cmd->input_file = NULL;
-        cmd->output_file = NULL;
-        cmd->output_append = 0;
-        cmd->pipeline_cmd = NULL;
-
-        // If the segment contains a pipe, keep it raw and delegate to the shell
-        if (strstr(segment, "|"))
-        {
-            cmd->pipeline_cmd = strdup(segment);
-            cmd->args[0] = NULL;
-            cmd->num_args = 0;
-        }
-        else
-        {
-            int arg_idx = 0;
-            char *token = strtok(segment, " ");
-            while (token && arg_idx < BUFFER_MAX_SIZE - 1)
-            {
-                if (strcmp(token, "<") == 0)
-                {
-                    token = strtok(NULL, " ");
-                    if (token)
-                    {
-                        cmd->input_file = token;
-                    }
-                }
-                else if (strcmp(token, ">") == 0)
-                {
-                    token = strtok(NULL, " ");
-                    if (token)
-                    {
-                        cmd->output_file = token;
-                        cmd->output_append = 0;
-                    }
-                }
-                else if (strcmp(token, ">>") == 0)
-                {
-                    token = strtok(NULL, " ");
-                    if (token)
-                    {
-                        cmd->output_file = token;
-                        cmd->output_append = 1;
-                    }
-                }
-                else
-                {
-                    cmd->args[arg_idx++] = strdup(token);
-                }
-                token = strtok(NULL, " ");
-            }
-            cmd->args[arg_idx] = NULL;
-            cmd->num_args = arg_idx;
-        }
-
-        result->num_cmds++;
-        if (op_pos && result->num_cmds < MAX_CMDS)
-        {
-            result->ops[result->num_cmds - 1] = OP_AND;
-        }
-        cursor = next;
+        cmd_str = and_pos + 2;
     }
 
-    free(copy);
+    free(line_copy);
 }
 
 /** @brief Execute the parsed commands.
@@ -198,23 +311,14 @@ void parse_command(char *line, ParsedCommand *result)
 int execute_command(ParsedCommand *command)
 {
     if (command->num_cmds == 0)
-    {
-        return SUCCESS; // Empty command
-    }
-
-    if (command->num_cmds == 1)
-    {
-        return execute_single_command(&command->cmds[0], command->is_background);
-    }
+        return SUCCESS;
 
     int status = SUCCESS;
     for (int i = 0; i < command->num_cmds; i++)
     {
         int result = execute_single_command(&command->cmds[i], command->is_background);
         if (result != SUCCESS)
-        {
             status = FAILURE;
-        }
     }
     return status;
 }
@@ -227,150 +331,23 @@ int execute_command(ParsedCommand *command)
 int execute_single_command(Command *cmd, int background)
 {
     if (cmd->pipeline_cmd == NULL && cmd->args[0] == NULL)
-    {
         return SUCCESS;
-    }
 
-    // If this is a raw pipeline string, delegate directly to sh -c
     if (cmd->pipeline_cmd)
-    {
-        pid_t pid = fork();
-        if (pid == 0)
-        {
-            // Child
-            if (cmd->input_file)
-            {
-                int fd = open(cmd->input_file, O_RDONLY);
-                if (fd == -1)
-                {
-                    perror("open input");
-                    exit(EXIT_FAILURE);
-                }
-                dup2(fd, STDIN_FILENO);
-                close(fd);
-            }
-            if (cmd->output_file)
-            {
-                int flags = O_WRONLY | O_CREAT | (cmd->output_append ? O_APPEND : O_TRUNC);
-                int fd = open(cmd->output_file, flags, 0644);
-                if (fd == -1)
-                {
-                    perror("open output");
-                    exit(EXIT_FAILURE);
-                }
-                dup2(fd, STDOUT_FILENO);
-                close(fd);
-            }
+        return run_pipeline_command(cmd, background);
 
-            execlp("sh", "sh", "-c", cmd->pipeline_cmd, (char *)NULL);
-            perror("exec sh");
-            exit(EXIT_FAILURE);
-        }
-        else if (pid < 0)
-        {
-            perror("fork");
-            return FAILURE;
-        }
-        else
-        {
-            if (!background)
-            {
-                int status;
-                wait(&status);
-                if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
-                {
-                    return SUCCESS;
-                }
-                else
-                {
-                    return FAILURE;
-                }
-            }
-            return SUCCESS;
-        }
+    // Only if no redirections
+    if (cmd->input_file == NULL && cmd->output_file == NULL)
+    {
+        if (strcmp(cmd->args[0], "cd") == 0)
+            return cd_cmd(cmd->args);
+        if (strcmp(cmd->args[0], "pwd") == 0)
+            return pwd_cmd();
+        if (strcmp(cmd->args[0], "echo") == 0)
+            return echo_cmd(cmd->args);
+        if (strcmp(cmd->args[0], "exit") == 0)
+            return exit_cmd();
     }
 
-    if (cmd->args[0] == NULL)
-    {
-        return SUCCESS;
-    }
-
-    // Check built-in commands (don't support redirections for simplicity)
-    if (strcmp(cmd->args[0], "cd") == 0)
-    {
-        return cd_cmd(cmd->args);
-    }
-    else if (strcmp(cmd->args[0], "pwd") == 0)
-    {
-        return pwd_cmd();
-    }
-    else if (strcmp(cmd->args[0], "echo") == 0)
-    {
-        return echo_cmd(cmd->args);
-    }
-    else if (strcmp(cmd->args[0], "exit") == 0)
-    {
-        return exit_cmd();
-    }
-    else
-    {
-        // External command
-        pid_t pid = fork();
-        if (pid == 0)
-        {
-            // Child
-            if (cmd->input_file)
-            {
-                int fd = open(cmd->input_file, O_RDONLY);
-                if (fd == -1)
-                {
-                    perror("open input");
-                    exit(EXIT_FAILURE);
-                }
-                dup2(fd, STDIN_FILENO);
-                close(fd);
-            }
-            if (cmd->output_file)
-            {
-                int flags = O_WRONLY | O_CREAT | (cmd->output_append ? O_APPEND : O_TRUNC);
-                int fd = open(cmd->output_file, flags, 0644);
-                if (fd == -1)
-                {
-                    perror("open output");
-                    exit(EXIT_FAILURE);
-                }
-                dup2(fd, STDOUT_FILENO);
-                close(fd);
-            }
-            if (execvp(cmd->args[0], cmd->args) == -1)
-            {
-                fprintf(stderr, "Command not found: %s\n", cmd->args[0]);
-                exit(EXIT_FAILURE);
-            }
-        }
-        else if (pid < 0)
-        {
-            perror("fork");
-            return FAILURE;
-        }
-        else
-        {
-            // Parent process
-            if (!background)
-            {
-                int status;
-                wait(&status);
-                if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
-                {
-                    return SUCCESS;
-                }
-                else
-                {
-                    return FAILURE;
-                }
-            }
-            return SUCCESS;
-        }
-    }
-    return FAILURE; // To satisfy compiler
+    return run_external_command(cmd, background);
 }
