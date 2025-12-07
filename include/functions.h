@@ -38,3 +38,10 @@ void parse_command(char *line, ParsedCommand *result);
  * @return SUCCESS on success, FAILURE on failure.
  */
 int execute_command(ParsedCommand *command);
+
+/** @brief Execute a single command with redirections.
+ * @param cmd Pointer to the command to execute.
+ * @param background 1 if background, 0 otherwise.
+ * @return SUCCESS on success, FAILURE on failure.
+ */
+int execute_single_command(Command *cmd, int background);
