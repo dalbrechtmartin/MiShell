@@ -27,7 +27,14 @@ int echo_cmd(char **args);
  */
 int exit_cmd();
 
-/** @brief Execute the valids commands.
+/** @brief Parses a command line into a ParsedCommand structure.
+ * @param line The command line input.
+ * @param result Pointer to a ParsedCommand structure to store the parsed result.
+ */
+void parse_command(char *line, ParsedCommand *result);
+
+/** @brief Execute the parsed commands.
+ * @param command Pointer to the parsed command structure.
  * @return SUCCESS on success, FAILURE on failure.
  */
-int execute_command(char *line);
+int execute_command(ParsedCommand *command);

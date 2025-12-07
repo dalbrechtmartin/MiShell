@@ -10,6 +10,7 @@
 int main(int argc, char **argv)
 {
     char line[BUFFER_MAX_SIZE];
+    ParsedCommand parsed_command;
 
     while (1)
     {
@@ -20,7 +21,8 @@ int main(int argc, char **argv)
         }
         else
         {
-            execute_command(line);
+            parse_command(line, &parsed_command);
+            execute_command(&parsed_command);
         }
     }
     exit_cmd();
