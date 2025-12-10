@@ -12,18 +12,41 @@ This graph shows which files directly or indirectly include this file\+:\nopageb
 \includegraphics[width=250pt]{typedef_8h__dep__incl}
 \end{center}
 \end{figure}
+\doxysubsubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structCommand}{Command}}
+\begin{DoxyCompactList}\small\item\em Structure to hold a single command and its arguments. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structParsedCommand}{Parsed\+Command}}
+\begin{DoxyCompactList}\small\item\em Structure to hold parsed commands and operators. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsubsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
 \Hypertarget{typedef_8h_a6af23dc8e878e337457c36bdfa2e38a5}\label{typedef_8h_a6af23dc8e878e337457c36bdfa2e38a5} 
 \#define {\bfseries BUFFER\+\_\+\+MAX\+\_\+\+SIZE}~1024
-\item 
+\begin{DoxyCompactList}\small\item\em Maximum size for input buffer. \end{DoxyCompactList}\item 
 \Hypertarget{typedef_8h_aa90cac659d18e8ef6294c7ae337f6b58}\label{typedef_8h_aa90cac659d18e8ef6294c7ae337f6b58} 
 \#define {\bfseries SUCCESS}~0
-\item 
+\begin{DoxyCompactList}\small\item\em General success code. \end{DoxyCompactList}\item 
 \Hypertarget{typedef_8h_a6d58f9ac447476b4e084d7ca383f5183}\label{typedef_8h_a6d58f9ac447476b4e084d7ca383f5183} 
 \#define {\bfseries FAILURE}~1
-\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em General failure code. \end{DoxyCompactList}\item 
+\Hypertarget{typedef_8h_ad14effda14501a769b3d46984d43aa00}\label{typedef_8h_ad14effda14501a769b3d46984d43aa00} 
+\#define {\bfseries MAX\+\_\+\+CMDS}~3
+\begin{DoxyCompactList}\small\item\em Maximum number of commands in a parsed command line. \end{DoxyCompactList}\item 
+\Hypertarget{typedef_8h_a2f8864f32c9b96956a018e9fedee05db}\label{typedef_8h_a2f8864f32c9b96956a018e9fedee05db} 
+\#define {\bfseries HISTORY\+\_\+\+FILE\+\_\+\+NAME}~"{}mishell\+\_\+history.\+txt"{}
+\begin{DoxyCompactList}\small\item\em History file name (will be placed in home directory). \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{typedef_8h_a7215803e478cdd4bdf4f1b8087cae87b}\label{typedef_8h_a7215803e478cdd4bdf4f1b8087cae87b} 
+enum \mbox{\hyperlink{typedef_8h_a7215803e478cdd4bdf4f1b8087cae87b}{Operator}} \{ {\bfseries OP\+\_\+\+NONE}
+, {\bfseries OP\+\_\+\+PIPE}
+, {\bfseries OP\+\_\+\+AND}
+, {\bfseries OP\+\_\+\+OR}
+ \}
+\begin{DoxyCompactList}\small\item\em Enum for operators between commands. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}

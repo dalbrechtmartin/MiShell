@@ -1,0 +1,309 @@
+\chapter{Mi\+Shell – Rapport de Développement }
+\hypertarget{md_rapports_2README__FR}{}\label{md_rapports_2README__FR}\index{MiShell – Rapport de Développement@{MiShell – Rapport de Développement}}
+\label{md_rapports_2README__FR_autotoc_md23}%
+\Hypertarget{md_rapports_2README__FR_autotoc_md23}%
+\hypertarget{md_rapports_2README__FR_autotoc_md24}{}\doxysection{\texorpdfstring{Sommaire}{Sommaire}}\label{md_rapports_2README__FR_autotoc_md24}
+
+\begin{DoxyItemize}
+\item Vue d\textquotesingle{}ensemble
+\item Important \+: Clarification sur les fonctionnalités
+\item Démarche de développement
+\begin{DoxyItemize}
+\item Phase 1 \+: Commandes simples sans arguments
+\item Phase 2 \+: Exécution de commandes externes
+\item Phase 3 \+: Arguments et redirections
+\item Phase 4 \+: Les opérateurs
+\item Phase 5 \+: Redirections avec builtins
+\item Phase 6 \+: Historique des commandes
+\end{DoxyItemize}
+\item Architecture finale
+\item Difficultés rencontrées et solutions
+\item Commandes supportées
+\item Exemple d\textquotesingle{}utilisation
+\item Construction
+\item Dépendances
+\item Licence
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+\hypertarget{md_rapports_2README__FR_autotoc_md26}{}\doxysection{\texorpdfstring{Vue d\textquotesingle{}ensemble}{Vue d\textquotesingle{}ensemble}}\label{md_rapports_2README__FR_autotoc_md26}
+Mi\+Shell est un mini-\/shell implémenté en C, développé dans le cadre d\textquotesingle{}un projet scolaire. Ce projet m\textquotesingle{}a permis d\textquotesingle{}explorer les mécanismes de base d\textquotesingle{}un interpréteur de commandes \+: parsing, exécution, gestion des processus enfants, et opérateurs logiques.\hypertarget{md_rapports_2README__FR_autotoc_md27}{}\doxysection{\texorpdfstring{Important \+: Clarification sur les fonctionnalités}{Important \+: Clarification sur les fonctionnalités}}\label{md_rapports_2README__FR_autotoc_md27}
+Les redirections ({\ttfamily \texorpdfstring{$<$}{<}}, {\ttfamily \texorpdfstring{$>$}{>}}, {\ttfamily \texorpdfstring{$>$}{>}\texorpdfstring{$>$}{>}}), les opérateurs logiques ({\ttfamily \&\&}, {\ttfamily \texorpdfstring{$\vert$}{|}\texorpdfstring{$\vert$}{|}}) et les pipes ({\ttfamily \texorpdfstring{$\vert$}{|}}) {\bfseries{étaient obligatoires}} selon le sujet du projet (FM02). Cependant, de ce que j\textquotesingle{}ai compris, le sujet ne demandait {\bfseries{pas}} explicitement de les implémenter comme des {\bfseries{built-\/in}} (fonctionnalités codées directement dans le shell).
+
+Cela signifie que j\textquotesingle{}avais le choix entre \+:
+
+
+\begin{DoxyEnumerate}
+\item {\bfseries{Les implémenter moi-\/même}} (redirection via {\ttfamily dup2()}, parsing des opérateurs, etc.) – ce que j\textquotesingle{}ai fait au début puis que j\textquotesingle{}ai abandonné car trop complexe
+\item {\bfseries{Les déléguer au shell système}} via {\ttfamily sh -\/c} – ce que j\textquotesingle{}ai donc fait par la suite pour les pipes et {\ttfamily \texorpdfstring{$\vert$}{|}\texorpdfstring{$\vert$}{|}}
+\end{DoxyEnumerate}
+
+Les seules commandes qui {\bfseries{devaient être obligatoirement built-\/in}} étaient \+: {\ttfamily cd}, {\ttfamily pwd}, {\ttfamily echo}, {\ttfamily exit} (FM03).
+
+⬆ Retour au sommet\hypertarget{md_rapports_2README__FR_autotoc_md28}{}\doxysection{\texorpdfstring{Démarche de développement}{Démarche de développement}}\label{md_rapports_2README__FR_autotoc_md28}
+\hypertarget{md_rapports_2README__FR_autotoc_md29}{}\doxysubsection{\texorpdfstring{Phase 1 \+: Commandes simples sans arguments}{Phase 1 \+: Commandes simples sans arguments}}\label{md_rapports_2README__FR_autotoc_md29}
+Au départ, j\textquotesingle{}ai commencé par l\textquotesingle{}essentiel \+: {\bfseries{exécuter des commandes simples}}. L\textquotesingle{}objectif était de pouvoir saisir une commande (ex. {\ttfamily pwd}, {\ttfamily ls}) et l\textquotesingle{}afficher correctement.
+
+
+\begin{DoxyItemize}
+\item Création des commandes built-\/in \+: {\ttfamily cd}, {\ttfamily pwd}, {\ttfamily echo}, {\ttfamily exit}
+\item Structure de base sans fonctions au début
+\item Une boucle simple qui lit l\textquotesingle{}entrée et exécute
+\end{DoxyItemize}\hypertarget{md_rapports_2README__FR_autotoc_md30}{}\doxysubsection{\texorpdfstring{Phase 2 \+: Exécution de commandes externes}{Phase 2 \+: Exécution de commandes externes}}\label{md_rapports_2README__FR_autotoc_md30}
+Ensuite, pour exécuter {\bfseries{n\textquotesingle{}importe quelle commande}}, pas juste mes built-\/in j\textquotesingle{}ai ajouté la capacité à lancer des commandes externes via {\ttfamily execvp()} en créant un processus enfant ({\ttfamily fork()}).
+
+{\bfseries{Décision clé}} \+: Si une commande n\textquotesingle{}était pas un built-\/in, au lieu de lever une erreur, je {\bfseries{délègue son exécution au processus fils}} qui va la rechercher dans le {\ttfamily PATH} du système. Cela s\textquotesingle{}est avéré {\bfseries{très utile par la suite}} car cette approche m\textquotesingle{}a permis de gérer facilement les opérateurs complexes.\hypertarget{md_rapports_2README__FR_autotoc_md31}{}\doxysubsection{\texorpdfstring{Phase 3 \+: Arguments et redirections}{Phase 3 \+: Arguments et redirections}}\label{md_rapports_2README__FR_autotoc_md31}
+J\textquotesingle{}ai ensuite ajouté la {\bfseries{gestion des arguments}} ({\ttfamily ls -\/al}) et des {\bfseries{redirections}} ({\ttfamily \texorpdfstring{$>$}{>}}, {\ttfamily \texorpdfstring{$>$}{>}\texorpdfstring{$>$}{>}}, {\ttfamily \texorpdfstring{$<$}{<}}) – deux fonctionnalités obligatoires du sujet. Le parsing est devenu plus complexe \+:
+
+
+\begin{DoxyItemize}
+\item Tokeniser la ligne de commande
+\item Détecter les redirections
+\item Appliquer les redirections dans le processus enfant avec {\ttfamily dup2()}
+\end{DoxyItemize}
+
+⬆ Retour au sommet\hypertarget{md_rapports_2README__FR_autotoc_md32}{}\doxysubsection{\texorpdfstring{Phase 4 \+: Les opérateurs – Ma plus grande difficulté}{Phase 4 \+: Les opérateurs – Ma plus grande difficulté}}\label{md_rapports_2README__FR_autotoc_md32}
+Le sujet exigeait de supporter les opérateurs {\ttfamily \&\&} (AND logique), {\ttfamily \texorpdfstring{$\vert$}{|}\texorpdfstring{$\vert$}{|}} (OR logique) et les {\bfseries{pipes}} ({\ttfamily \texorpdfstring{$\vert$}{|}}). C\textquotesingle{}est ici que j\textquotesingle{}ai {\bfseries{vraiment eu du mal}} car au départ je pensais à tord que je devais les gérés totalement "{}built-\/in"{}.
+
+{\bfseries{Mes tentatives initiales}} étaient trop complexes \+:
+
+
+\begin{DoxyItemize}
+\item Tentative 1 \+: Parser tous les opérateurs en même temps → code très imbriqué et difficile à suivre
+\item Tentative 2 \+: Stocker les commandes dans des structures complexes → trop de cas à gérer
+\end{DoxyItemize}
+
+{\bfseries{La solution finale}} \+: J\textquotesingle{}ai opté pour une {\bfseries{approche minimaliste}} \+:
+
+
+\begin{DoxyEnumerate}
+\item {\bfseries{Split uniquement sur {\ttfamily \&\&}}} → cela me donne au maximum 3 commandes (conformément à {\ttfamily \doxylink{typedef_8h_ad14effda14501a769b3d46984d43aa00}{MAX\+\_\+\+CMDS}})
+\item {\bfseries{Conserver les pipes ET les {\ttfamily \texorpdfstring{$\vert$}{|}\texorpdfstring{$\vert$}{|}} à l\textquotesingle{}intérieur des commandes}} → plutôt que de les parser moi-\/même, je les passe au shell système
+\item {\bfseries{Créer une fonction {\ttfamily parse\+\_\+single\+\_\+command()}}} qui traite {\bfseries{une seule commande}} à la fois
+\end{DoxyEnumerate}
+
+Ainsi \+:
+
+
+\begin{DoxyItemize}
+\item {\ttfamily ps \&\& ls} → deux commandes exécutées séquentiellement (géré par Mi\+Shell)
+\item {\ttfamily ls \texorpdfstring{$\vert$}{|} grep "{}.txt"{}} → {\bfseries{une seule commande}} passée à {\ttfamily sh -\/c} qui gère le pipe
+\item {\ttfamily false \texorpdfstring{$\vert$}{|}\texorpdfstring{$\vert$}{|} echo "{}ok"{}} → {\bfseries{une seule commande}} passée à {\ttfamily sh -\/c} qui gère le {\ttfamily \texorpdfstring{$\vert$}{|}\texorpdfstring{$\vert$}{|}}
+\item {\ttfamily ps \&\& ls \texorpdfstring{$\vert$}{|} grep "{}.txt"{}} → deux commandes \+: {\ttfamily ps} d\textquotesingle{}un côté, {\ttfamily ls \texorpdfstring{$\vert$}{|} grep "{}.txt"{}} de l\textquotesingle{}autre
+\end{DoxyItemize}
+
+{\bfseries{Avantage}} \+: Le code devient {\bfseries{très lisible}}. Les pipes et {\ttfamily \texorpdfstring{$\vert$}{|}\texorpdfstring{$\vert$}{|}} ne sont pas mon problème – je laisse le shell s\textquotesingle{}en charger via {\ttfamily sh -\/c}. J\textquotesingle{}ai juste à gérer le split logique sur {\ttfamily \&\&}.
+
+⬆ Retour au sommet\hypertarget{md_rapports_2README__FR_autotoc_md33}{}\doxysubsection{\texorpdfstring{Phase 5 \+: Redirections avec builtins}{Phase 5 \+: Redirections avec builtins}}\label{md_rapports_2README__FR_autotoc_md33}
+Un dernier défi \+: les builtins ({\ttfamily echo}, {\ttfamily pwd}) ne supportaient pas les redirections. J\textquotesingle{}ai ajouté une vérification \+: si un builtin a une redirection, il est exécuté via le processus enfant (comme une commande externe).
+
+⬆ Retour au sommet\hypertarget{md_rapports_2README__FR_autotoc_md34}{}\doxysubsection{\texorpdfstring{Phase 6 \+: Historique des commandes – Une persistance bien pensée}{Phase 6 \+: Historique des commandes – Une persistance bien pensée}}\label{md_rapports_2README__FR_autotoc_md34}
+Au début, j\textquotesingle{}avais une idée simple \+: sauvegarder chaque commande dans un fichier {\ttfamily mishell\+\_\+history.\+txt}. Mais rapidement, je me suis heurté à un problème courant avec les chemins relatifs.
+
+{\bfseries{Le problème}} \+:
+
+Quand j\textquotesingle{}utilisais un chemin relatif ({\ttfamily mishell\+\_\+history.\+txt}), le fichier se créait dans le répertoire courant au démarrage du shell. Mais dès qu\textquotesingle{}un utilisateur faisait {\ttfamily cd}, le répertoire courant changeait ! La prochaine commande sauvegardée créait un {\bfseries{nouveau fichier}} dans le nouveau répertoire au lieu de continuer d\textquotesingle{}écrire dans l\textquotesingle{}original.
+
+{\bfseries{Mes tentatives}} \+:
+
+
+\begin{DoxyEnumerate}
+\item {\bfseries{Première idée}} \+: Utiliser la variable {\ttfamily \$HOME} pour stocker l\textquotesingle{}historique dans le home de l\textquotesingle{}utilisateur. Mais sur Windows/\+WSL, cette variable n\textquotesingle{}est pas toujours définie, et ce n\textquotesingle{}était pas vraiment ce que je voulais.
+\item {\bfseries{Deuxième idée}} \+: Garder un chemin relatif mais ajouter une variable globale {\ttfamily history\+\_\+path} et la passer partout. Ça fonctionnait, mais c\textquotesingle{}était redondant et peu élégant.
+\end{DoxyEnumerate}
+
+{\bfseries{La solution finale}} \+:
+
+J\textquotesingle{}ai implémenté une {\bfseries{variable globale statique {\ttfamily initial\+\_\+cwd}}} qui sauvegarde le répertoire courant au démarrage du shell via {\ttfamily getcwd()}. Ensuite, peu importe où on navigue avec {\ttfamily cd}, l\textquotesingle{}historique est toujours écrit au même endroit \+: {\ttfamily \texorpdfstring{$<$}{<}répertoire\+\_\+de\+\_\+lancement\texorpdfstring{$>$}{>}/mishell\+\_\+history.txt}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{//\ Au\ démarrage}}
+\DoxyCodeLine{\mbox{\hyperlink{functions_8h_a61326e8ca2063c1d4e7f89f292f6a3d9}{init\_history\_directory}}();\ \ \textcolor{comment}{//\ Capture\ le\ cwd\ dans\ initial\_cwd}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{//\ Pour\ chaque\ commande}}
+\DoxyCodeLine{\mbox{\hyperlink{functions_8h_ac6047fe7f27adbe3051b67924440d383}{save\_in\_history}}(line);\ \ \ \ \ \textcolor{comment}{//\ Utilise\ toujours\ initial\_cwd}}
+
+\end{DoxyCode}
+
+
+⬆ Retour au sommet\hypertarget{md_rapports_2README__FR_autotoc_md35}{}\doxysection{\texorpdfstring{Architecture finale}{Architecture finale}}\label{md_rapports_2README__FR_autotoc_md35}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{parse\_command()\ [MiShell]}
+\DoxyCodeLine{\ \ └─\ Split\ sur\ \&\&\ uniquement}
+\DoxyCodeLine{\ \ └─\ parse\_single\_command()\ (pour\ chaque\ segment)\ [MiShell]}
+\DoxyCodeLine{\ \ \ \ \ └─\ Détecte\ pipes\ ou\ ||\ →\ stocke\ tout\ en\ pipeline\_cmd\ [Délégation]}
+\DoxyCodeLine{\ \ \ \ \ └─\ Sinon,\ tokenise\ et\ détecte\ redirections\ [MiShell]}
+\DoxyCodeLine{}
+\DoxyCodeLine{execute\_command()\ [MiShell]}
+\DoxyCodeLine{\ \ └─\ execute\_single\_command()\ (pour\ chaque\ commande)\ [MiShell]}
+\DoxyCodeLine{\ \ \ \ \ └─\ Si\ pipeline\_cmd\ →\ run\_pipeline\_command()\ [sh\ -\/c]}
+\DoxyCodeLine{\ \ \ \ \ └─\ Si\ builtin\ sans\ redirection\ →\ exécute\ directement\ [MiShell]}
+\DoxyCodeLine{\ \ \ \ \ └─\ Sinon\ →\ run\_external\_command()\ [fork\ +\ execvp]}
+
+\end{DoxyCode}
+\hypertarget{md_rapports_2README__FR_autotoc_md36}{}\doxysubsection{\texorpdfstring{Note sur le mode batch (FM05)}{Note sur le mode batch (FM05)}}\label{md_rapports_2README__FR_autotoc_md36}
+Le {\bfseries{mode batch}} permet d\textquotesingle{}exécuter une commande directement sans passer par le mode interactif.
+
+{\bfseries{Utilisation}} \+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$\ ./MiShell\ -\/c\ "{}ls\ -\/al"{}}
+\DoxyCodeLine{\$\ ./MiShell\ -\/c\ "{}pwd\ \&\&\ echo\ done"{}}
+\DoxyCodeLine{\$\ ./MiShell\ -\/c\ "{}export\ MY\_VAR=test\ \&\&\ echo\ \$MY\_VAR"{}}
+
+\end{DoxyCode}
+
+
+{\bfseries{Implémentation}} \+:
+
+Dans {\ttfamily \doxylink{mishell_8c_a3c04138a5bfe5d72780bb7e82a18e627}{main()}}, on vérifie d\textquotesingle{}abord si l\textquotesingle{}argument {\ttfamily -\/c} est présent \+: Si l\textquotesingle{}argument n\textquotesingle{}est pas fourni, on passe au mode interactif normal. J\textquotesingle{}ai simplement réutiliser les fonctions de parsing et d\textquotesingle{}exécution existantes.\hypertarget{md_rapports_2README__FR_autotoc_md37}{}\doxysubsection{\texorpdfstring{Note sur les variables d\textquotesingle{}environnement (FM06)}{Note sur les variables d\textquotesingle{}environnement (FM06)}}\label{md_rapports_2README__FR_autotoc_md37}
+Les variables d\textquotesingle{}environnement sont gérées via la commande built-\/in {\ttfamily export}. Cette commande utilise {\ttfamily putenv()} pour modifier l\textquotesingle{}environnement du processus courant et de tous les processus enfants créés après.
+
+{\bfseries{Utilisation}} \+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{export}\ VAR=value}
+
+\end{DoxyCode}
+
+
+{\bfseries{Exemple}} \+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{MiShell>\ \$\ export\ MY\_VAR=hello}
+\DoxyCodeLine{MiShell>\ \$\ echo\ \$MY\_VAR}
+\DoxyCodeLine{hello}
+\DoxyCodeLine{}
+\DoxyCodeLine{MiShell>\ \$\ export\ PATH=/custom/path:\$PATH}
+\DoxyCodeLine{MiShell>\ \$\ which\ my\_command}
+\DoxyCodeLine{/custom/path/my\_command}
+
+\end{DoxyCode}
+
+
+{\bfseries{Implémentation}} \+:
+
+La fonction {\ttfamily \doxylink{functions_8h_a02a85854505e4af389e6bcef12c2884b}{export\+\_\+cmd()}} \+:
+
+
+\begin{DoxyEnumerate}
+\item Vérifie que l\textquotesingle{}argument contient un {\ttfamily =}
+\item Duplique la chaîne (car {\ttfamily putenv()} ne la copie pas)
+\item Appelle {\ttfamily putenv()} pour modifier l\textquotesingle{}environnement
+\item Les variables restent disponibles pour tous les processus enfants lancés par la suite
+\end{DoxyEnumerate}\hypertarget{md_rapports_2README__FR_autotoc_md38}{}\doxysubsection{\texorpdfstring{Note sur les alias (FM07)}{Note sur les alias (FM07)}}\label{md_rapports_2README__FR_autotoc_md38}
+Pour les {\bfseries{alias du shell système}} (comme {\ttfamily ll} pour {\ttfamily ls -\/al}), aucune implémentation spéciale n\textquotesingle{}est nécessaire dans Mi\+Shell. Puisqu\textquotesingle{}un alias n\textquotesingle{}est pas une commande built-\/in reconnue, il est automatiquement traité comme une {\bfseries{commande externe}} et exécuté via {\ttfamily fork() + execvp()}. Le shell système se charge de résoudre l\textquotesingle{}alias. Cela fonctionne naturellement sans code supplémentaire.\hypertarget{md_rapports_2README__FR_autotoc_md39}{}\doxysubsection{\texorpdfstring{Répartition des responsabilités}{Répartition des responsabilités}}\label{md_rapports_2README__FR_autotoc_md39}
+
+\begin{DoxyTable}{3}{}{}{1}
+\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Fonctionnalité  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Géré par Mi\+Shell  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Délégué à sh -\/c  \\
+Parsing \&\&  &✅  &❌  \\
+Parsing $|$$|$  &❌  &✅  \\
+Parsing pipes  &❌  &✅  \\
+Exécution séquentielle avec \&\&  &✅  &❌  \\
+Exécution conditionnelle avec $|$$|$  &❌  &✅  \\
+Gestion des pipes  &❌  &✅  \\
+Redirection \texorpdfstring{$<$}{<}, \texorpdfstring{$>$}{>}, \texorpdfstring{$>$}{>}\texorpdfstring{$>$}{>}  &✅  &❌  \\
+Commandes built-\/in  &✅  &❌  \\
+Commandes externes  &✅ (via fork/execvp)  &❌  \\
+Détection background \&  &✅  &❌  \\
+Historique persistant  &✅  &❌  \\
+Alias du shell système  &❌  &✅  \\
+Variables d\textquotesingle{}environnement  &✅ (via export)  &❌  \\
+\end{DoxyTable}
+
+
+⬆ Retour au sommet\hypertarget{md_rapports_2README__FR_autotoc_md40}{}\doxysection{\texorpdfstring{Difficultés rencontrées et solutions}{Difficultés rencontrées et solutions}}\label{md_rapports_2README__FR_autotoc_md40}
+
+\begin{DoxyTable}{3}{}{}{1}
+\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Difficulté  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Cause  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Solution  \\
+Parsing complexe  &Tenter de gérer tous les opérateurs à la fois  &Split uniquement sur {\ttfamily \&\&}, déléguer les pipes au shell  \\
+Pipes non fonctionnels  &Tentative de créer une structure complexe pour les pipes  &Stocker en {\ttfamily pipeline\+\_\+cmd} et passer à {\ttfamily sh -\/c}  \\
+Redirections sur builtins  &Pas de gestion du fork pour les builtins  &Ajouter fork si redirection détectée  \\
+Mémoire invalide  &{\ttfamily strtok()} modifie la chaîne, puis on la free  &Ajouter {\ttfamily strdup()} sur les noms de fichiers  \\
+Code difficile à maintenir  &Tout dans une seule fonction, pas de structure  &Refactoring complet \+: extraction de fonctions, noms explicites  \\
+Historique créé à mauvais endroit  &Chemin relatif + {\ttfamily cd} = fichiers dupliqués  &Capturer le cwd au démarrage dans une variable globale  \\
+Double free en mémoire  &Libération de {\ttfamily \doxylink{structParsedCommand}{Parsed\+Command}} à deux endroits  &Créer {\ttfamily free\+\_\+command()} et l\textquotesingle{}appeler une seule fois  \\
+Warning snprintf troncature  &{\ttfamily snprintf()} pouvait tronquer le chemin d\textquotesingle{}historique  &Vérifier le retour de {\ttfamily snprintf()} au lieu de pré-\/calculer  \\
+\end{DoxyTable}
+
+
+⬆ Retour au sommet\hypertarget{md_rapports_2README__FR_autotoc_md41}{}\doxysection{\texorpdfstring{Commandes supportées}{Commandes supportées}}\label{md_rapports_2README__FR_autotoc_md41}
+
+\begin{DoxyItemize}
+\item {\bfseries{Mode d\textquotesingle{}exécution}} \+:
+\begin{DoxyItemize}
+\item Mode interactif (prompt {\ttfamily Mi\+Shell\texorpdfstring{$>$}{>} \$})
+\item Mode batch ({\ttfamily -\/c "{}commande"{}})
+\end{DoxyItemize}
+\item {\bfseries{Builtins}} \+: {\ttfamily cd}, {\ttfamily pwd}, {\ttfamily echo}, {\ttfamily export}, {\ttfamily exit}
+\item {\bfseries{Variables d\textquotesingle{}environnement}} \+: Créées avec {\ttfamily export VAR=value}
+\item {\bfseries{Externes}} \+: Toute commande disponible dans le {\ttfamily PATH}
+\item {\bfseries{Alias}} \+: Les alias du shell système sont supportés (ex\+: {\ttfamily ll} s\textquotesingle{}il existe)
+\item {\bfseries{Opérateurs}} \+:
+\begin{DoxyItemize}
+\item {\ttfamily \&\&} (AND logique) – géré directement par Mi\+Shell
+\item {\ttfamily \texorpdfstring{$\vert$}{|}\texorpdfstring{$\vert$}{|}} (OR logique) – délégué au shell système via {\ttfamily sh -\/c}
+\item {\ttfamily \&} (background)
+\end{DoxyItemize}
+\item {\bfseries{Pipes}} \+: {\ttfamily \texorpdfstring{$\vert$}{|}} (délégués au shell système via {\ttfamily sh -\/c})
+\item {\bfseries{Redirections}} \+: {\ttfamily \texorpdfstring{$<$}{<}} (input), {\ttfamily \texorpdfstring{$>$}{>}} (output), {\ttfamily \texorpdfstring{$>$}{>}\texorpdfstring{$>$}{>}} (append)
+\item {\bfseries{Historique}} \+: Toutes les commandes sont enregistrées automatiquement dans {\ttfamily mishell\+\_\+history.\+txt}
+\end{DoxyItemize}
+
+⬆ Retour au sommet\hypertarget{md_rapports_2README__FR_autotoc_md42}{}\doxysection{\texorpdfstring{Exemple d\textquotesingle{}utilisation}{Exemple d\textquotesingle{}utilisation}}\label{md_rapports_2README__FR_autotoc_md42}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\#\ Redirection\ +\ AND\ (géré\ par\ MiShell)}
+\DoxyCodeLine{MiShell>\ \$\ echo\ Hello\ >\ test.txt\ \&\&\ cat\ test.txt}
+\DoxyCodeLine{Hello}
+\DoxyCodeLine{}
+\DoxyCodeLine{\#\ Pipe\ (délégué\ à\ sh\ -\/c)}
+\DoxyCodeLine{MiShell>\ \$\ ls\ -\/al\ |\ grep\ "{}.c"{}}
+\DoxyCodeLine{-\/rw-\/r-\/-\/r-\/-\/\ ...\ functions.c}
+\DoxyCodeLine{-\/rw-\/r-\/-\/r-\/-\/\ ...\ mishell.c}
+\DoxyCodeLine{}
+\DoxyCodeLine{\#\ OR\ logique\ (délégué\ à\ sh\ -\/c)}
+\DoxyCodeLine{MiShell>\ \$\ false\ ||\ echo\ "{}Fallback\ executed"{}}
+\DoxyCodeLine{Fallback\ executed}
+\DoxyCodeLine{}
+\DoxyCodeLine{\#\ AND\ géré\ par\ MiShell}
+\DoxyCodeLine{MiShell>\ \$\ cd\ /tmp\ \&\&\ pwd}
+\DoxyCodeLine{/tmp}
+\DoxyCodeLine{}
+\DoxyCodeLine{\#\ Combinaison\ :\ AND\ (MiShell)\ +\ Pipe\ (sh\ -\/c)}
+\DoxyCodeLine{MiShell>\ \$\ echo\ "{}test"{}\ \&\&\ ls\ |\ head\ -\/n\ 2}
+\DoxyCodeLine{test}
+\DoxyCodeLine{file1}
+\DoxyCodeLine{file2}
+\DoxyCodeLine{}
+\DoxyCodeLine{MiShell>\ \$\ exit}
+\DoxyCodeLine{Exiting\ MiShell...}
+
+\end{DoxyCode}
+
+
+⬆ Retour au sommet\hypertarget{md_rapports_2README__FR_autotoc_md43}{}\doxysection{\texorpdfstring{Construction}{Construction}}\label{md_rapports_2README__FR_autotoc_md43}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{make\ all\ \ \ \ \ \ \ \#\ Compile\ tout}
+\DoxyCodeLine{make\ clean\ \ \ \ \ \#\ Nettoie\ les\ objets}
+\DoxyCodeLine{make\ doc\ \ \ \ \ \ \ \#\ Génère\ la\ doc\ Doxygen}
+
+\end{DoxyCode}
+
+
+⬆ Retour au sommet\hypertarget{md_rapports_2README__FR_autotoc_md44}{}\doxysection{\texorpdfstring{Dépendances}{Dépendances}}\label{md_rapports_2README__FR_autotoc_md44}
+
+\begin{DoxyItemize}
+\item Compilateur C (gcc)
+\item Bibliothèques C standard (stdio, stdlib, etc.)
+\item Fonctions POSIX (fork, wait, execvp) – {\bfseries{requiert Unix/\+Linux/\+WSL}}
+\end{DoxyItemize}
+
+⬆ Retour au sommet\hypertarget{md_rapports_2README__FR_autotoc_md45}{}\doxysection{\texorpdfstring{Licence}{Licence}}\label{md_rapports_2README__FR_autotoc_md45}
+Voir \mbox{[}LICENSE\mbox{]}(LICENSE). 

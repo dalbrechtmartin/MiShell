@@ -90,23 +90,27 @@ Include dependency graph for functions.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="functions_8h__incl.png" border="0" usemap="#ainclude_2functions_8h" loading="lazy" alt=""/></div>
 <map name="ainclude_2functions_8h" id="ainclude_2functions_8h">
-<area shape="rect" title="Contains the declarations of the built&#45;in shell functions." alt="" coords="230,5,361,32"/>
-<area shape="rect" href="libs_8h.html" title="Includes libraries needed across the project." alt="" coords="225,80,278,107"/>
-<area shape="poly" title=" " alt="" coords="290,34,269,68,265,65,286,31"/>
-<area shape="rect" href="typedef_8h.html" title="Contains type definitions and constants used across the project." alt="" coords="302,80,377,107"/>
-<area shape="poly" title=" " alt="" coords="305,31,326,65,322,68,301,34"/>
+<area shape="rect" title="Contains the declarations of the built&#45;in shell functions." alt="" coords="318,5,449,32"/>
+<area shape="rect" href="libs_8h.html" title="Includes libraries needed across the project." alt="" coords="313,80,366,107"/>
+<area shape="poly" title=" " alt="" coords="378,34,357,68,353,65,374,31"/>
+<area shape="rect" href="typedef_8h.html" title="Contains type definitions and constants used across the project." alt="" coords="390,80,465,107"/>
+<area shape="poly" title=" " alt="" coords="393,31,414,65,410,68,389,34"/>
 <area shape="rect" title=" " alt="" coords="5,155,66,181"/>
-<area shape="poly" title=" " alt="" coords="226,106,81,154,80,149,224,101"/>
+<area shape="poly" title=" " alt="" coords="314,103,81,156,80,151,312,98"/>
 <area shape="rect" title=" " alt="" coords="89,155,152,181"/>
-<area shape="poly" title=" " alt="" coords="230,110,158,149,156,144,227,105"/>
+<area shape="poly" title=" " alt="" coords="314,106,168,154,166,149,312,101"/>
 <area shape="rect" title=" " alt="" coords="177,155,241,181"/>
-<area shape="poly" title=" " alt="" coords="246,109,226,143,222,140,242,106"/>
-<area shape="rect" title=" " alt="" coords="265,155,326,181"/>
-<area shape="poly" title=" " alt="" coords="261,106,282,140,278,143,257,109"/>
-<area shape="rect" title=" " alt="" coords="350,155,417,181"/>
-<area shape="poly" title=" " alt="" coords="276,105,349,145,346,149,273,110"/>
-<area shape="rect" title=" " alt="" coords="442,155,523,181"/>
-<area shape="poly" title=" " alt="" coords="279,100,428,147,426,152,277,105"/>
+<area shape="poly" title=" " alt="" coords="318,110,246,149,244,144,315,105"/>
+<area shape="rect" title=" " alt="" coords="265,155,329,181"/>
+<area shape="poly" title=" " alt="" coords="334,109,314,143,310,140,330,106"/>
+<area shape="rect" title=" " alt="" coords="353,155,414,181"/>
+<area shape="poly" title=" " alt="" coords="349,106,370,140,366,143,345,109"/>
+<area shape="rect" title=" " alt="" coords="439,155,496,181"/>
+<area shape="poly" title=" " alt="" coords="363,105,433,144,431,149,360,110"/>
+<area shape="rect" title=" " alt="" coords="520,155,588,181"/>
+<area shape="poly" title=" " alt="" coords="367,101,506,148,505,153,365,106"/>
+<area shape="rect" title=" " alt="" coords="612,155,694,181"/>
+<area shape="poly" title=" " alt="" coords="367,101,379,104,486,129,598,152,597,157,485,134,378,109,365,106"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -134,8 +138,25 @@ Functions</h2></td></tr>
 <tr class="memdesc:aaba64aa13f9e6a8737cb9dccf673dc56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints the given arguments to the standard output.  <br /></td></tr>
 <tr class="memitem:af7eac76b32b0e9587cab2c2a402e6fc7" id="r_af7eac76b32b0e9587cab2c2a402e6fc7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af7eac76b32b0e9587cab2c2a402e6fc7">exit_cmd</a> ()</td></tr>
 <tr class="memdesc:af7eac76b32b0e9587cab2c2a402e6fc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exits the shell.  <br /></td></tr>
-<tr class="memitem:a9b4b7070fc42f2414c69cdba7685ef8e" id="r_a9b4b7070fc42f2414c69cdba7685ef8e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9b4b7070fc42f2414c69cdba7685ef8e">execute_command</a> (char *line)</td></tr>
-<tr class="memdesc:a9b4b7070fc42f2414c69cdba7685ef8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Execute the valids commands.  <br /></td></tr>
+<tr class="memitem:a02a85854505e4af389e6bcef12c2884b" id="r_a02a85854505e4af389e6bcef12c2884b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a02a85854505e4af389e6bcef12c2884b">export_cmd</a> (char **args)</td></tr>
+<tr class="memdesc:a02a85854505e4af389e6bcef12c2884b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates or modifies an environment variable.  <br /></td></tr>
+<tr class="memitem:a401c094b7ec5cfcc4e6f5350937fa39f" id="r_a401c094b7ec5cfcc4e6f5350937fa39f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a401c094b7ec5cfcc4e6f5350937fa39f">parse_command</a> (char *line, <a class="el" href="structParsedCommand.html">ParsedCommand</a> *result)</td></tr>
+<tr class="memdesc:a401c094b7ec5cfcc4e6f5350937fa39f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parses an input line into up to MAX_CMDS commands. Splits only on the logical operator "&amp;&amp;"; leaves pipes intact to be handled downstream. Background execution is detected via a trailing '&amp;'.  <br /></td></tr>
+<tr class="memitem:a25b87e28d4ca41e97b1bc7013163dbc4" id="r_a25b87e28d4ca41e97b1bc7013163dbc4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a25b87e28d4ca41e97b1bc7013163dbc4">execute_command</a> (<a class="el" href="structParsedCommand.html">ParsedCommand</a> *command)</td></tr>
+<tr class="memdesc:a25b87e28d4ca41e97b1bc7013163dbc4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Execute the <a class="el" href="structParsedCommand.html" title="Structure to hold parsed commands and operators.">ParsedCommand</a> produced by parse_command. Runs single commands directly or multiple commands sequentially.  <br /></td></tr>
+<tr class="memitem:abec9b3b512bceca1db0b78f1f457b917" id="r_abec9b3b512bceca1db0b78f1f457b917"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abec9b3b512bceca1db0b78f1f457b917">execute_single_command</a> (<a class="el" href="structCommand.html">Command</a> *cmd, int background)</td></tr>
+<tr class="memdesc:abec9b3b512bceca1db0b78f1f457b917"><td class="mdescLeft">&#160;</td><td class="mdescRight">Execute one command (builtin, pipeline, or external) with redirections. Pipelines are delegated to <span class="tt">sh -c</span> when present in <span class="tt">pipeline_cmd</span>.  <br /></td></tr>
+<tr class="memitem:a61326e8ca2063c1d4e7f89f292f6a3d9" id="r_a61326e8ca2063c1d4e7f89f292f6a3d9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a61326e8ca2063c1d4e7f89f292f6a3d9">init_history_directory</a> ()</td></tr>
+<tr class="memdesc:a61326e8ca2063c1d4e7f89f292f6a3d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the initial working directory (to be called at startup).  <br /></td></tr>
+<tr class="memitem:a247cb1078477a1be1a4dbfa38e499088" id="r_a247cb1078477a1be1a4dbfa38e499088"><td class="memItemLeft" align="right" valign="top">FILE *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a247cb1078477a1be1a4dbfa38e499088">fopen_history_file</a> (const char *mode)</td></tr>
+<tr class="memdesc:a247cb1078477a1be1a4dbfa38e499088"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens the history file with the specified mode.  <br /></td></tr>
+<tr class="memitem:ac6047fe7f27adbe3051b67924440d383" id="r_ac6047fe7f27adbe3051b67924440d383"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac6047fe7f27adbe3051b67924440d383">save_in_history</a> (const char *command_line)</td></tr>
+<tr class="memdesc:ac6047fe7f27adbe3051b67924440d383"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves a command line to the history file.  <br /></td></tr>
+<tr class="memitem:a7c7d573bf388c7e3371884b7f0f8885f" id="r_a7c7d573bf388c7e3371884b7f0f8885f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7c7d573bf388c7e3371884b7f0f8885f">load_history</a> (FILE *history_file)</td></tr>
+<tr class="memdesc:a7c7d573bf388c7e3371884b7f0f8885f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads command history from the history file.  <br /></td></tr>
+<tr class="memitem:af6b826b072cad6dcf4d48573016470b9" id="r_af6b826b072cad6dcf4d48573016470b9"><td class="memItemLeft" align="right" valign="top"><a id="af6b826b072cad6dcf4d48573016470b9" name="af6b826b072cad6dcf4d48573016470b9"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>delete_history</b> ()</td></tr>
+<tr class="memdesc:af6b826b072cad6dcf4d48573016470b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes the history file. <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Contains the declarations of the built-in shell functions. </p>
@@ -157,18 +178,6 @@ Functions</h2></td></tr>
 
 <p>Changes the current directory. </p>
 <dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">args</td><td>Array of arguments where args[1] is the target directory. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>SUCCESS on success, FAILURE on failure.</dd></dl>
-<h1 class="doxsection"><a class="anchor" id="BUILTIN_COMMANDS"></a>
-Built-in Commands</h1>
-<p>This section contains implementations of built-in shell commands. </p>
-<h2 class="doxsection"><a class="anchor" id="CD_COMMAND"></a>
-CD Command</h2>
-<p>Implementation of the cd command. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">args</td><td>Array of arguments where args[1] is the target directory. </td></tr>
   </table>
@@ -200,21 +209,12 @@ CD Command</h2>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>SUCCESS on success, FAILURE on failure.</dd></dl>
-<h2 class="doxsection"><a class="anchor" id="ECHO_COMMAND"></a>
-ECHO Command</h2>
-<p>Implementation of the echo command. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">args</td><td>Array of arguments to be printed. </td></tr>
-  </table>
-  </dd>
-</dl>
 <dl class="section return"><dt>Returns</dt><dd>SUCCESS on success, FAILURE on failure. </dd></dl>
 
 </div>
 </div>
-<a id="a9b4b7070fc42f2414c69cdba7685ef8e" name="a9b4b7070fc42f2414c69cdba7685ef8e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9b4b7070fc42f2414c69cdba7685ef8e">&#9670;&#160;</a></span>execute_command()</h2>
+<a id="a25b87e28d4ca41e97b1bc7013163dbc4" name="a25b87e28d4ca41e97b1bc7013163dbc4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25b87e28d4ca41e97b1bc7013163dbc4">&#9670;&#160;</a></span>execute_command()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -222,21 +222,64 @@ ECHO Command</h2>
         <tr>
           <td class="memname">int execute_command </td>
           <td>(</td>
-          <td class="paramtype">char *</td>          <td class="paramname"><span class="paramname"><em>line</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structParsedCommand.html">ParsedCommand</a> *</td>          <td class="paramname"><span class="paramname"><em>command</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Execute the valids commands. </p>
-<dl class="section return"><dt>Returns</dt><dd>SUCCESS on success, FAILURE on failure.</dd></dl>
-<p>Execute the valids commands.</p>
-<p>@endsection </p>
-<h1 class="doxsection"><a class="anchor" id="BASIC_FUNCTIONS"></a>
-Basic Functions</h1>
-<p>This section contains implementations of basic functions used by the shell. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Execute the <a class="el" href="structParsedCommand.html" title="Structure to hold parsed commands and operators.">ParsedCommand</a> produced by parse_command. Runs single commands directly or multiple commands sequentially. </p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">line</td><td>User input. </td></tr>
+    <tr><td class="paramname">command</td><td>Parsed command bundle to execute. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>SUCCESS on success, FAILURE if any command fails.</dd></dl>
+<p>Execute the <a class="el" href="structParsedCommand.html" title="Structure to hold parsed commands and operators.">ParsedCommand</a> produced by parse_command. Runs single commands directly or multiple commands sequentially.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">command</td><td>Pointer to the parsed command structure. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>SUCCESS on success, FAILURE on failure. </dd></dl>
+
+</div>
+</div>
+<a id="abec9b3b512bceca1db0b78f1f457b917" name="abec9b3b512bceca1db0b78f1f457b917"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abec9b3b512bceca1db0b78f1f457b917">&#9670;&#160;</a></span>execute_single_command()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int execute_single_command </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structCommand.html">Command</a> *</td>          <td class="paramname"><span class="paramname"><em>cmd</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>background</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Execute one command (builtin, pipeline, or external) with redirections. Pipelines are delegated to <span class="tt">sh -c</span> when present in <span class="tt">pipeline_cmd</span>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cmd</td><td><a class="el" href="structCommand.html" title="Structure to hold a single command and its arguments.">Command</a> to execute. </td></tr>
+    <tr><td class="paramname">background</td><td>1 to avoid waiting, 0 to wait for completion. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>SUCCESS on success, FAILURE on failure.</dd></dl>
+<p>Execute one command (builtin, pipeline, or external) with redirections. Pipelines are delegated to <span class="tt">sh -c</span> when present in <span class="tt">pipeline_cmd</span>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cmd</td><td>Pointer to the command to execute. </td></tr>
+    <tr><td class="paramname">background</td><td>1 if background, 0 otherwise. </td></tr>
   </table>
   </dd>
 </dl>
@@ -260,10 +303,142 @@ Basic Functions</h1>
 </div><div class="memdoc">
 
 <p>Exits the shell. </p>
-<dl class="section return"><dt>Returns</dt><dd>EXIT_SUCCESS.</dd></dl>
-<h2 class="doxsection"><a class="anchor" id="EXIT_COMMAND"></a>
-EXIT Command</h2>
-<p>Implementation of the exit command. </p><dl class="section return"><dt>Returns</dt><dd>EXIT_SUCCESS. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>EXIT_SUCCESS. </dd></dl>
+
+</div>
+</div>
+<a id="a02a85854505e4af389e6bcef12c2884b" name="a02a85854505e4af389e6bcef12c2884b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a02a85854505e4af389e6bcef12c2884b">&#9670;&#160;</a></span>export_cmd()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int export_cmd </td>
+          <td>(</td>
+          <td class="paramtype">char **</td>          <td class="paramname"><span class="paramname"><em>args</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Creates or modifies an environment variable. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">args</td><td>Array of arguments where args[1] is VAR=value. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>SUCCESS on success, FAILURE on failure. </dd></dl>
+
+</div>
+</div>
+<a id="a247cb1078477a1be1a4dbfa38e499088" name="a247cb1078477a1be1a4dbfa38e499088"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a247cb1078477a1be1a4dbfa38e499088">&#9670;&#160;</a></span>fopen_history_file()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">FILE * fopen_history_file </td>
+          <td>(</td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>mode</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Opens the history file with the specified mode. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mode</td><td>File open mode ("r", "a", etc.) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>FILE pointer on success, NULL on failure. </dd></dl>
+
+</div>
+</div>
+<a id="a61326e8ca2063c1d4e7f89f292f6a3d9" name="a61326e8ca2063c1d4e7f89f292f6a3d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61326e8ca2063c1d4e7f89f292f6a3d9">&#9670;&#160;</a></span>init_history_directory()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int init_history_directory </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initialize the initial working directory (to be called at startup). </p>
+<dl class="section return"><dt>Returns</dt><dd>SUCCESS on success, FAILURE on failure. </dd></dl>
+
+</div>
+</div>
+<a id="a7c7d573bf388c7e3371884b7f0f8885f" name="a7c7d573bf388c7e3371884b7f0f8885f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7c7d573bf388c7e3371884b7f0f8885f">&#9670;&#160;</a></span>load_history()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void load_history </td>
+          <td>(</td>
+          <td class="paramtype">FILE *</td>          <td class="paramname"><span class="paramname"><em>history_file</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Loads command history from the history file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">history_file</td><td>File pointer to the opened history file. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a401c094b7ec5cfcc4e6f5350937fa39f" name="a401c094b7ec5cfcc4e6f5350937fa39f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a401c094b7ec5cfcc4e6f5350937fa39f">&#9670;&#160;</a></span>parse_command()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void parse_command </td>
+          <td>(</td>
+          <td class="paramtype">char *</td>          <td class="paramname"><span class="paramname"><em>line</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structParsedCommand.html">ParsedCommand</a> *</td>          <td class="paramname"><span class="paramname"><em>result</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Parses an input line into up to MAX_CMDS commands. Splits only on the logical operator "&amp;&amp;"; leaves pipes intact to be handled downstream. Background execution is detected via a trailing '&amp;'. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">line</td><td>Raw input line (will not be modified). </td></tr>
+    <tr><td class="paramname">result</td><td>Destination structure for parsed commands and operators.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Parses an input line into up to MAX_CMDS commands. Splits only on the logical operator "&amp;&amp;"; leaves pipes intact to be handled downstream. Background execution is detected via a trailing '&amp;'.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">line</td><td>The command line input. </td></tr>
+    <tr><td class="paramname">result</td><td>Pointer to a <a class="el" href="structParsedCommand.html" title="Structure to hold parsed commands and operators.">ParsedCommand</a> structure to store the parsed result. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -283,10 +458,32 @@ EXIT Command</h2>
 </div><div class="memdoc">
 
 <p>Prints the current working directory. </p>
-<dl class="section return"><dt>Returns</dt><dd>SUCCESS on success, FAILURE on failure.</dd></dl>
-<h2 class="doxsection"><a class="anchor" id="PWD_COMMAND"></a>
-PWD Command</h2>
-<p>Implementation of the pwd command. </p><dl class="section return"><dt>Returns</dt><dd>SUCCESS on success, FAILURE on failure. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>SUCCESS on success, FAILURE on failure. </dd></dl>
+
+</div>
+</div>
+<a id="ac6047fe7f27adbe3051b67924440d383" name="ac6047fe7f27adbe3051b67924440d383"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6047fe7f27adbe3051b67924440d383">&#9670;&#160;</a></span>save_in_history()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void save_in_history </td>
+          <td>(</td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>command_line</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Saves a command line to the history file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">command_line</td><td>The command line to save. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

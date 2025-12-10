@@ -80,10 +80,56 @@ $(function() {
 <div class="contents">
 <a href="typedef_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span> </div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#define BUFFER_MAX_SIZE 1024</span></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#define SUCCESS 0</span></div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#define FAILURE 1</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#ifndef TYPEDEF_H</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#define TYPEDEF_H</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno"><a class="line" href="typedef_8h.html#a6af23dc8e878e337457c36bdfa2e38a5">    9</a></span><span class="preprocessor">#define BUFFER_MAX_SIZE 1024</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="typedef_8h.html#aa90cac659d18e8ef6294c7ae337f6b58">   12</a></span><span class="preprocessor">#define SUCCESS 0</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno"><a class="line" href="typedef_8h.html#a6d58f9ac447476b4e084d7ca383f5183">   14</a></span><span class="preprocessor">#define FAILURE 1</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="typedef_8h.html#ad14effda14501a769b3d46984d43aa00">   17</a></span><span class="preprocessor">#define MAX_CMDS 3</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="typedef_8h.html#a2f8864f32c9b96956a018e9fedee05db">   20</a></span><span class="preprocessor">#define HISTORY_FILE_NAME &quot;mishell_history.txt&quot;</span></div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span></div>
+<div class="foldopen" id="foldopen00023" data-start="{" data-end="};">
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="typedef_8h.html#a7215803e478cdd4bdf4f1b8087cae87b">   23</a></span><span class="keyword">typedef</span> <span class="keyword">enum</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>{</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    OP_NONE,</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    OP_PIPE,</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    OP_AND,</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    OP_OR</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>} <a class="code hl_enumeration" href="typedef_8h.html#a7215803e478cdd4bdf4f1b8087cae87b">Operator</a>;</div>
+</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span></div>
+<div class="foldopen" id="foldopen00032" data-start="{" data-end="};">
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="structCommand.html">   32</a></span><span class="keyword">typedef</span> <span class="keyword">struct</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>{</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    <span class="keywordtype">char</span> *args[<a class="code hl_define" href="typedef_8h.html#a6af23dc8e878e337457c36bdfa2e38a5">BUFFER_MAX_SIZE</a>];</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    <span class="keywordtype">int</span> num_args;</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    <span class="keywordtype">char</span> *pipeline_cmd; <span class="comment">// Full command string executed via shell when it contains pipes</span></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <span class="keywordtype">char</span> *input_file;   <span class="comment">// for &lt; redirection</span></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    <span class="keywordtype">char</span> *output_file;  <span class="comment">// for &gt; or &gt;&gt; redirection</span></div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <span class="keywordtype">int</span> output_append;  <span class="comment">// 1 if &gt;&gt;, 0 if &gt;</span></div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>} <a class="code hl_struct" href="structCommand.html">Command</a>;</div>
+</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span></div>
+<div class="foldopen" id="foldopen00043" data-start="{" data-end="};">
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="structParsedCommand.html">   43</a></span><span class="keyword">typedef</span> <span class="keyword">struct</span></div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>{</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <a class="code hl_struct" href="structCommand.html">Command</a> cmds[<a class="code hl_define" href="typedef_8h.html#ad14effda14501a769b3d46984d43aa00">MAX_CMDS</a>];</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <a class="code hl_enumeration" href="typedef_8h.html#a7215803e478cdd4bdf4f1b8087cae87b">Operator</a> ops[<a class="code hl_define" href="typedef_8h.html#ad14effda14501a769b3d46984d43aa00">MAX_CMDS</a> - 1];</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <span class="keywordtype">int</span> num_cmds;</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    <span class="keywordtype">int</span> is_background; <span class="comment">// 0 = false, 1 = true</span></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>} <a class="code hl_struct" href="structParsedCommand.html">ParsedCommand</a>;</div>
+</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span><span class="preprocessor">#endif </span><span class="comment">// TYPEDEF_H</span></div>
+<div class="ttc" id="astructCommand_html"><div class="ttname"><a href="structCommand.html">Command</a></div><div class="ttdoc">Structure to hold a single command and its arguments.</div><div class="ttdef"><b>Definition</b> typedef.h:33</div></div>
+<div class="ttc" id="astructParsedCommand_html"><div class="ttname"><a href="structParsedCommand.html">ParsedCommand</a></div><div class="ttdoc">Structure to hold parsed commands and operators.</div><div class="ttdef"><b>Definition</b> typedef.h:44</div></div>
+<div class="ttc" id="atypedef_8h_html_a6af23dc8e878e337457c36bdfa2e38a5"><div class="ttname"><a href="typedef_8h.html#a6af23dc8e878e337457c36bdfa2e38a5">BUFFER_MAX_SIZE</a></div><div class="ttdeci">#define BUFFER_MAX_SIZE</div><div class="ttdoc">Maximum size for input buffer.</div><div class="ttdef"><b>Definition</b> typedef.h:9</div></div>
+<div class="ttc" id="atypedef_8h_html_a7215803e478cdd4bdf4f1b8087cae87b"><div class="ttname"><a href="typedef_8h.html#a7215803e478cdd4bdf4f1b8087cae87b">Operator</a></div><div class="ttdeci">Operator</div><div class="ttdoc">Enum for operators between commands.</div><div class="ttdef"><b>Definition</b> typedef.h:24</div></div>
+<div class="ttc" id="atypedef_8h_html_ad14effda14501a769b3d46984d43aa00"><div class="ttname"><a href="typedef_8h.html#ad14effda14501a769b3d46984d43aa00">MAX_CMDS</a></div><div class="ttdeci">#define MAX_CMDS</div><div class="ttdoc">Maximum number of commands in a parsed command line.</div><div class="ttdef"><b>Definition</b> typedef.h:17</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
