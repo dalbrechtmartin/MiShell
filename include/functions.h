@@ -2,6 +2,9 @@
  *  @brief Contains the declarations of the built-in shell functions.
  */
 
+#ifndef FUNCTIONS_H
+#define FUNCTIONS_H
+
 #include "libs.h"
 #include "typedef.h"
 
@@ -49,3 +52,30 @@ int execute_command(ParsedCommand *command);
  * @return SUCCESS on success, FAILURE on failure.
  */
 int execute_single_command(Command *cmd, int background);
+
+/** @brief Initialize the initial working directory (to be called at startup).
+ * @return SUCCESS on success, FAILURE on failure.
+ */
+int init_history_directory();
+
+/** @brief Opens the history file with the specified mode.
+ * @param mode File open mode ("r", "a", etc.)
+ * @return FILE pointer on success, NULL on failure.
+ */
+FILE *fopen_history_file(const char *mode);
+
+/** @brief Saves a command line to the history file.
+ * @param command_line The command line to save.
+ */
+void save_in_history(const char *command_line);
+
+/** @brief Loads command history from the history file.
+ * @param history_file File pointer to the opened history file.
+ */
+void load_history(FILE *history_file);
+
+/** @brief Deletes the history file.
+ */
+void delete_history();
+
+#endif // FUNCTIONS_H

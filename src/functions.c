@@ -3,6 +3,10 @@
  */
 
 #include "../include/functions.h"
+#include "functions.h"
+
+/** @brief Global variable to store the initial working directory at shell startup. */
+static char initial_cwd[BUFFER_MAX_SIZE] = {0};
 
 /**
  * @brief Zero-initialize a Command structure.
@@ -11,6 +15,38 @@
 static void init_command(Command *cmd)
 {
     memset(cmd, 0, sizeof(*cmd));
+}
+
+/**
+ * @brief Free all allocated memory in a Command structure.
+ * @param cmd Command to free.
+ */
+static void free_command(Command *cmd)
+{
+    if (!cmd)
+        return;
+
+    for (int i = 0; i < cmd->num_args && cmd->args[i]; i++)
+    {
+        free(cmd->args[i]);
+        cmd->args[i] = NULL;
+    }
+
+    if (cmd->input_file)
+    {
+        free(cmd->input_file);
+        cmd->input_file = NULL;
+    }
+    if (cmd->output_file)
+    {
+        free(cmd->output_file);
+        cmd->output_file = NULL;
+    }
+    if (cmd->pipeline_cmd)
+    {
+        free(cmd->pipeline_cmd);
+        cmd->pipeline_cmd = NULL;
+    }
 }
 
 /**
@@ -320,6 +356,12 @@ int execute_command(ParsedCommand *command)
         if (result != SUCCESS)
             status = FAILURE;
     }
+
+    for (int i = 0; i < command->num_cmds; i++)
+    {
+        free_command(&command->cmds[i]);
+    }
+
     return status;
 }
 
@@ -350,4 +392,94 @@ int execute_single_command(Command *cmd, int background)
     }
 
     return run_external_command(cmd, background);
+}
+
+/** @brief Gets the full path to the history file in the startup directory.
+ * @param path Buffer where the path will be stored.
+ * @return SUCCESS on success, FAILURE on failure.
+ */
+static int get_history_file_path(char *path)
+{
+    if (initial_cwd[0] == '\0')
+    {
+        snprintf(path, BUFFER_MAX_SIZE, "%s", HISTORY_FILE_NAME);
+        return SUCCESS;
+    }
+
+    int written = snprintf(path, BUFFER_MAX_SIZE, "%s/%s", initial_cwd, HISTORY_FILE_NAME);
+    if (written >= BUFFER_MAX_SIZE || written < 0)
+    {
+        perror("History file path too long");
+        return FAILURE;
+    }
+
+    return SUCCESS;
+}
+
+/** @brief Opens the history file with the specified mode.
+ * @param mode File open mode ("r", "a", etc.)
+ * @return FILE pointer on success, NULL on failure.
+ */
+FILE *fopen_history_file(const char *mode)
+{
+    char history_path[BUFFER_MAX_SIZE];
+    if (get_history_file_path(history_path) != SUCCESS)
+        return NULL;
+
+    return fopen(history_path, mode);
+}
+
+/** @brief Initialize the initial working directory (to be called at startup).
+ * @return SUCCESS on success, FAILURE on failure.
+ */
+int init_history_directory()
+{
+    if (getcwd(initial_cwd, sizeof(initial_cwd)) == NULL)
+    {
+        perror("getcwd");
+        return FAILURE;
+    }
+    return SUCCESS;
+}
+
+/** @brief Saves a command line to the history file.
+ * @param command_line The command line to save.
+ */
+void save_in_history(const char *command_line)
+{
+    FILE *history_file = fopen_history_file("a");
+    if (history_file)
+    {
+        fprintf(history_file, "%s", command_line);
+        fclose(history_file);
+    }
+}
+
+/** @brief Loads command history from the history file.
+ * @param history_file File pointer to the opened history file.
+ */
+void load_history(FILE *history_file)
+{
+    if (history_file)
+    {
+        char line[BUFFER_MAX_SIZE];
+        while (fgets(line, sizeof(line), history_file))
+        {
+            printf("%s", line);
+        }
+    }
+}
+
+/** @brief Deletes the history file.
+ */
+void delete_history()
+{
+    char history_path[BUFFER_MAX_SIZE];
+    if (get_history_file_path(history_path) != SUCCESS)
+        return;
+
+    if (remove(history_path) != 0)
+    {
+        perror("Error deleting history file");
+    }
 }

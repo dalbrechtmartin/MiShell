@@ -2,6 +2,9 @@
  *  @brief Contains type definitions and constants used across the project.
  */
 
+#ifndef TYPEDEF_H
+#define TYPEDEF_H
+
 /** @brief Maximum size for input buffer. */
 #define BUFFER_MAX_SIZE 1024
 
@@ -12,6 +15,9 @@
 
 /** @brief Maximum number of commands in a parsed command line. */
 #define MAX_CMDS 3
+
+/** @brief History file name (will be placed in home directory). */
+#define HISTORY_FILE_NAME "mishell_history.txt"
 
 /** @brief Enum for operators between commands. */
 typedef enum
@@ -41,3 +47,5 @@ typedef struct
     int num_cmds;
     int is_background; // 0 = false, 1 = true
 } ParsedCommand;
+
+#endif // TYPEDEF_H
