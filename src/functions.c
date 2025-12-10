@@ -212,6 +212,36 @@ int exit_cmd()
     exit(EXIT_SUCCESS);
 }
 
+/** @brief Creates or modifies an environment variable.
+ * @param args Array of arguments where args[1] is VAR=value.
+ * @return SUCCESS on success, FAILURE on failure.
+ */
+int export_cmd(char **args)
+{
+    if (args[1] == NULL)
+    {
+        perror("Missing argument\n");
+        return FAILURE;
+    }
+
+    // VAR=value
+    char *var_assignment = args[1];
+
+    if (strchr(var_assignment, '=') == NULL)
+    {
+        perror("Invalid format (VAR=value)\n");
+        return FAILURE;
+    }
+
+    if (putenv(strdup(var_assignment)) != 0)
+    {
+        perror("putenv");
+        return FAILURE;
+    }
+
+    return SUCCESS;
+}
+
 /**
  * @brief Parse one command string into a Command structure.
  * Handles tokenization, input/output redirection detection.
@@ -387,6 +417,8 @@ int execute_single_command(Command *cmd, int background)
             return pwd_cmd();
         if (strcmp(cmd->args[0], "echo") == 0)
             return echo_cmd(cmd->args);
+        if (strcmp(cmd->args[0], "export") == 0)
+            return export_cmd(cmd->args);
         if (strcmp(cmd->args[0], "exit") == 0)
             return exit_cmd();
     }

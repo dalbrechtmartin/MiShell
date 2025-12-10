@@ -30,6 +30,12 @@ int echo_cmd(char **args);
  */
 int exit_cmd();
 
+/** @brief Creates or modifies an environment variable.
+ * @param args Array of arguments where args[1] is VAR=value.
+ * @return SUCCESS on success, FAILURE on failure.
+ */
+int export_cmd(char **args);
+
 /** @brief Parses an input line into up to MAX_CMDS commands.
  * Splits only on the logical operator "&&"; leaves pipes intact to be handled
  * downstream. Background execution is detected via a trailing '&'.
