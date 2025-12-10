@@ -14,13 +14,25 @@ int main(int argc, char **argv)
 
     init_history_directory();
 
+    // Batch mode: ./MiShell -c "command"
+    if (argc >= 3 && strcmp(argv[1], "-c") == 0)
+    {
+        strncpy(line, argv[2], BUFFER_MAX_SIZE - 1);
+        line[BUFFER_MAX_SIZE - 1] = '\0';
+
+        parse_command(line, &parsed_command);
+        execute_command(&parsed_command);
+        return EXIT_SUCCESS;
+    }
+
+    // Normal interactive mode
     FILE *history_file = fopen_history_file("r");
 
     if (history_file)
     {
         load_history(history_file);
         fclose(history_file);
-        // delete_history(); // Uncomment to clear history on each run (used for testing)
+        // delete_history(); // Uncomment to clear history on each start
     }
 
     while (1)
