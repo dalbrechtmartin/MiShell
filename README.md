@@ -109,6 +109,10 @@ execute_command() [MiShell]
      └─ Sinon → run_external_command() [fork + execvp]
 ```
 
+### Note sur les alias (FM07)
+
+Pour les **alias du shell système** (comme `ll` pour `ls -al`), aucune implémentation spéciale n'est nécessaire dans MiShell. Puisqu'un alias n'est pas une commande built-in reconnue, il est automatiquement traité comme une **commande externe** et exécuté via `fork() + execvp()`. Le shell système se charge de résoudre l'alias. Cela fonctionne naturellement sans code supplémentaire.
+
 ### Répartition des responsabilités
 
 | Fonctionnalité                     | Géré par MiShell     | Délégué à sh -c |
@@ -124,6 +128,7 @@ execute_command() [MiShell]
 | Commandes externes                 | ✅ (via fork/execvp) | ❌              |
 | Détection background &             | ✅                   | ❌              |
 | Historique persistant              | ✅                   | ❌              |
+| Alias du shell système             | ❌                   | ✅              |
 
 ## Difficultés rencontrées et solutions
 
@@ -142,6 +147,7 @@ execute_command() [MiShell]
 
 - **Builtins** : `cd`, `pwd`, `echo`, `exit`
 - **Externes** : Toute commande disponible dans le `PATH`
+- **Alias** : Les alias du shell système sont supportés (ex: `ll` s'il existe)
 - **Opérateurs** :
   - `&&` (AND logique) – géré directement par MiShell
   - `||` (OR logique) – délégué au shell système via `sh -c`
@@ -196,9 +202,7 @@ make doc       # Génère la doc Doxygen
 
 ## TODO
 
-- ✅ Historique des commandes (implémenté en Phase 6)
-- Alias et variables d'environnement
-- Navigation dans l'historique (flèches haut/bas)
+- Variables d'environnement
 
 ## Licence
 
