@@ -4,6 +4,17 @@
 
 MiShell est un mini-shell implémenté en C, développé dans le cadre d'un projet scolaire. Ce projet m'a permis d'explorer les mécanismes de base d'un interpréteur de commandes : parsing, exécution, gestion des processus enfants, et opérateurs logiques.
 
+## Important : Clarification sur les fonctionnalités
+
+Les redirections (`<`, `>`, `>>`), les opérateurs logiques (`&&`, `||`) et les pipes (`|`) **étaient obligatoires** selon le sujet du projet (FM02). Cependant, de ce que j'ai compris, le sujet ne demandait **pas** explicitement de les implémenter comme des **built-in** (fonctionnalités codées directement dans le shell).
+
+Cela signifie que j'avais le choix entre :
+
+1. **Les implémenter moi-même** (redirection via `dup2()`, parsing des opérateurs, etc.) – ce que j'ai fait au début puis que j'ai abandonné car trop complexe
+2. **Les déléguer au shell système** via `sh -c` – ce que j'ai donc fait par la suite pour les pipes et `||`
+
+Les seules commandes qui **devaient être obligatoirement built-in** étaient : `cd`, `pwd`, `echo`, `exit` (FM03).
+
 ## Démarche de développement
 
 ### Phase 1 : Commandes simples sans arguments
@@ -16,13 +27,13 @@ Au départ, j'ai commencé par l'essentiel : **exécuter des commandes simples**
 
 ### Phase 2 : Exécution de commandes externes
 
-Ensuite, j'ai réalisé que les utilisateurs voudraient exécuter **n'importe quelle commande**, pas juste mes built-in. J'ai donc ajouté la capacité à lancer des commandes externes via `execvp()` en créant un processus enfant (`fork()`).
+Ensuite, pour exécuter **n'importe quelle commande**, pas juste mes built-in j'ai ajouté la capacité à lancer des commandes externes via `execvp()` en créant un processus enfant (`fork()`).
 
 **Décision clé** : Si une commande n'était pas un built-in, au lieu de lever une erreur, je **délègue son exécution au processus fils** qui va la rechercher dans le `PATH` du système. Cela s'est avéré **très utile par la suite** car cette approche m'a permis de gérer facilement les opérateurs complexes.
 
 ### Phase 3 : Arguments et redirections
 
-J'ai ensuite ajouté la **gestion des arguments** (`ls -al`) et des **redirections** (`>`, `>>`, `<`). Le parsing est devenu plus complexe :
+J'ai ensuite ajouté la **gestion des arguments** (`ls -al`) et des **redirections** (`>`, `>>`, `<`) – deux fonctionnalités obligatoires du sujet. Le parsing est devenu plus complexe :
 
 - Tokeniser la ligne de commande
 - Détecter les redirections
@@ -30,13 +41,7 @@ J'ai ensuite ajouté la **gestion des arguments** (`ls -al`) et des **redirectio
 
 ### Phase 4 : Les opérateurs – Ma plus grande difficulté
 
-C'est ici que j'ai **vraiment eu du mal**. Je voulais supporter `&&` (AND logique), `||` (OR logique) et les **pipes** (`|`).
-
-**Les défis** :
-
-- Comment splitter correctement la ligne sur plusieurs opérateurs ?
-- Comment gérer les pipes qui eux-mêmes changent la structure (redirection interprocess) ?
-- Comment garder un code **lisible et maintenable** sans dupliquer la logique ?
+Le sujet exigeait de supporter les opérateurs `&&` (AND logique), `||` (OR logique) et les **pipes** (`|`). C'est ici que j'ai **vraiment eu du mal** car au départ je pensais à tord que je devais les gérés totalement "built-in".
 
 **Mes tentatives initiales** étaient trop complexes :
 
@@ -92,14 +97,6 @@ execute_command() [MiShell]
 | Commandes built-in                 | ✅                   | ❌              |
 | Commandes externes                 | ✅ (via fork/execvp) | ❌              |
 | Détection background &             | ✅                   | ❌              |
-
-## Points clés de la réflexion
-
-1. **Ne pas réinventer la roue** : Les pipes sont complexes, le shell les gère bien → pourquoi pas le laisser faire ?
-2. **Simplicité > Complexité** : Un code simple et lisible vaut mieux qu'un code "optimal" mais incompréhensible
-3. **Itération progressive** : Commencer simple, puis ajouter des fonctionnalités une par une
-4. **Délégation intelligente** : Utiliser les outils disponibles (`sh -c`, `fork()`, `execvp()`) plutôt que tout implémenter from scratch
-5. **Refactoring indispensable** : Le code qui fonctionne n'est pas le code final – prendre le temps de restructurer, documenter et nettoyer est essentiel pour la maintenabilité
 
 ## Difficultés rencontrées et solutions
 
