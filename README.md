@@ -109,6 +109,37 @@ execute_command() [MiShell]
      └─ Sinon → run_external_command() [fork + execvp]
 ```
 
+### Note sur les variables d'environnement (FM06)
+
+Les variables d'environnement sont gérées via la commande built-in `export`. Cette commande utilise `putenv()` pour modifier l'environnement du processus courant et de tous les processus enfants créés après.
+
+**Utilisation** :
+
+```c
+export VAR=value
+```
+
+**Exemple** :
+
+```sh
+MiShell> $ export MY_VAR=hello
+MiShell> $ echo $MY_VAR
+hello
+
+MiShell> $ export PATH=/custom/path:$PATH
+MiShell> $ which my_command
+/custom/path/my_command
+```
+
+**Implémentation** :
+
+La fonction `export_cmd()` :
+
+1. Vérifie que l'argument contient un `=`
+2. Duplique la chaîne (car `putenv()` ne la copie pas)
+3. Appelle `putenv()` pour modifier l'environnement
+4. Les variables restent disponibles pour tous les processus enfants lancés par la suite
+
 ### Note sur les alias (FM07)
 
 Pour les **alias du shell système** (comme `ll` pour `ls -al`), aucune implémentation spéciale n'est nécessaire dans MiShell. Puisqu'un alias n'est pas une commande built-in reconnue, il est automatiquement traité comme une **commande externe** et exécuté via `fork() + execvp()`. Le shell système se charge de résoudre l'alias. Cela fonctionne naturellement sans code supplémentaire.
@@ -129,6 +160,7 @@ Pour les **alias du shell système** (comme `ll` pour `ls -al`), aucune impléme
 | Détection background &             | ✅                   | ❌              |
 | Historique persistant              | ✅                   | ❌              |
 | Alias du shell système             | ❌                   | ✅              |
+| Variables d'environnement          | ✅ (via export)      | ❌              |
 
 ## Difficultés rencontrées et solutions
 
@@ -145,7 +177,8 @@ Pour les **alias du shell système** (comme `ll` pour `ls -al`), aucune impléme
 
 ## Commandes supportées
 
-- **Builtins** : `cd`, `pwd`, `echo`, `exit`
+- **Builtins** : `cd`, `pwd`, `echo`, `export`, `exit`
+- **Variables d'environnement** : Créées avec `export VAR=value`
 - **Externes** : Toute commande disponible dans le `PATH`
 - **Alias** : Les alias du shell système sont supportés (ex: `ll` s'il existe)
 - **Opérateurs** :
@@ -199,10 +232,6 @@ make doc       # Génère la doc Doxygen
 - Compilateur C (gcc)
 - Bibliothèques C standard (stdio, stdlib, etc.)
 - Fonctions POSIX (fork, wait, execvp) – **requiert Unix/Linux/WSL**
-
-## TODO
-
-- Variables d'environnement
 
 ## Licence
 
