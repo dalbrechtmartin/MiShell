@@ -67,6 +67,32 @@ Ainsi :
 
 Un dernier défi : les builtins (`echo`, `pwd`) ne supportaient pas les redirections. J'ai ajouté une vérification : si un builtin a une redirection, il est exécuté via le processus enfant (comme une commande externe).
 
+### Phase 6 : Historique des commandes – Une persistance bien pensée
+
+Au début, j'avais une idée simple : sauvegarder chaque commande dans un fichier `mishell_history.txt`. Mais rapidement, je me suis heurté à un problème courant avec les chemins relatifs.
+
+**Le problème** :
+
+Quand j'utilisais un chemin relatif (`mishell_history.txt`), le fichier se créait dans le répertoire courant au démarrage du shell. Mais dès qu'un utilisateur faisait `cd`, le répertoire courant changeait ! La prochaine commande sauvegardée créait un **nouveau fichier** dans le nouveau répertoire au lieu de continuer d'écrire dans l'original.
+
+**Mes tentatives** :
+
+1. **Première idée** : Utiliser la variable `$HOME` pour stocker l'historique dans le home de l'utilisateur. Mais sur Windows/WSL, cette variable n'est pas toujours définie, et ce n'était pas vraiment ce que je voulais.
+
+2. **Deuxième idée** : Garder un chemin relatif mais ajouter une variable globale `history_path` et la passer partout. Ça fonctionnait, mais c'était redondant et peu élégant.
+
+**La solution finale** :
+
+J'ai implémenté une **variable globale statique `initial_cwd`** qui sauvegarde le répertoire courant au démarrage du shell via `getcwd()`. Ensuite, peu importe où on navigue avec `cd`, l'historique est toujours écrit au même endroit : `<répertoire_de_lancement>/mishell_history.txt`.
+
+```c
+// Au démarrage
+init_history_directory();  // Capture le cwd dans initial_cwd
+
+// Pour chaque commande
+save_in_history(line);     // Utilise toujours initial_cwd
+```
+
 ## Architecture finale
 
 ```
@@ -93,20 +119,24 @@ execute_command() [MiShell]
 | Exécution séquentielle avec &&     | ✅                   | ❌              |
 | Exécution conditionnelle avec \|\| | ❌                   | ✅              |
 | Gestion des pipes                  | ❌                   | ✅              |
-| Redirections <, >, >>              | ✅                   | ❌              |
+| Redirection <, >, >>               | ✅                   | ❌              |
 | Commandes built-in                 | ✅                   | ❌              |
 | Commandes externes                 | ✅ (via fork/execvp) | ❌              |
 | Détection background &             | ✅                   | ❌              |
+| Historique persistant              | ✅                   | ❌              |
 
 ## Difficultés rencontrées et solutions
 
-| Difficulté                 | Cause                                                    | Solution                                                       |
-| -------------------------- | -------------------------------------------------------- | -------------------------------------------------------------- |
-| Parsing complexe           | Tenter de gérer tous les opérateurs à la fois            | Split uniquement sur `&&`, déléguer les pipes au shell         |
-| Pipes non fonctionnels     | Tentative de créer une structure complexe pour les pipes | Stocker en `pipeline_cmd` et passer à `sh -c`                  |
-| Redirections sur builtins  | Pas de gestion du fork pour les builtins                 | Ajouter fork si redirection détectée                           |
-| Mémoire invalide           | `strtok()` modifie la chaîne, puis on la free            | Ajouter `strdup()` sur les noms de fichiers                    |
-| Code difficile à maintenir | Tout dans une seule fonction, pas de structure           | Refactoring complet : extraction de fonctions, noms explicites |
+| Difficulté                        | Cause                                                    | Solution                                                       |
+| --------------------------------- | -------------------------------------------------------- | -------------------------------------------------------------- |
+| Parsing complexe                  | Tenter de gérer tous les opérateurs à la fois            | Split uniquement sur `&&`, déléguer les pipes au shell         |
+| Pipes non fonctionnels            | Tentative de créer une structure complexe pour les pipes | Stocker en `pipeline_cmd` et passer à `sh -c`                  |
+| Redirections sur builtins         | Pas de gestion du fork pour les builtins                 | Ajouter fork si redirection détectée                           |
+| Mémoire invalide                  | `strtok()` modifie la chaîne, puis on la free            | Ajouter `strdup()` sur les noms de fichiers                    |
+| Code difficile à maintenir        | Tout dans une seule fonction, pas de structure           | Refactoring complet : extraction de fonctions, noms explicites |
+| Historique créé à mauvais endroit | Chemin relatif + `cd` = fichiers dupliqués               | Capturer le cwd au démarrage dans une variable globale         |
+| Double free en mémoire            | Libération de `ParsedCommand` à deux endroits            | Créer `free_command()` et l'appeler une seule fois             |
+| Warning snprintf troncature       | `snprintf()` pouvait tronquer le chemin d'historique     | Vérifier le retour de `snprintf()` au lieu de pré-calculer     |
 
 ## Commandes supportées
 
@@ -118,6 +148,7 @@ execute_command() [MiShell]
   - `&` (background)
 - **Pipes** : `|` (délégués au shell système via `sh -c`)
 - **Redirections** : `<` (input), `>` (output), `>>` (append)
+- **Historique** : Toutes les commandes sont enregistrées automatiquement dans `mishell_history.txt`
 
 ## Exemple d'utilisation
 
@@ -165,8 +196,9 @@ make doc       # Génère la doc Doxygen
 
 ## TODO
 
-- Historique des commandes
+- ✅ Historique des commandes (implémenté en Phase 6)
 - Alias et variables d'environnement
+- Navigation dans l'historique (flèches haut/bas)
 
 ## Licence
 
