@@ -1,0 +1,291 @@
+\doxysection{include/functions.h File Reference}
+\hypertarget{functions_8h}{}\label{functions_8h}\index{include/functions.h@{include/functions.h}}
+
+
+Contains the declarations of the built-\/in shell functions.  
+
+
+{\ttfamily \#include "{}libs.\+h"{}}\newline
+{\ttfamily \#include "{}typedef.\+h"{}}\newline
+Include dependency graph for functions.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{functions_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=250pt]{functions_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{functions_8h_a38992c8bfbd4d83469f0b73a3a20e59f}{cd\+\_\+cmd}} (char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}args)
+\begin{DoxyCompactList}\small\item\em Changes the current directory. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{functions_8h_a16f927816b5eee716ff2ebcbcb229cdd}{pwd\+\_\+cmd}} ()
+\begin{DoxyCompactList}\small\item\em Prints the current working directory. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{functions_8h_aaba64aa13f9e6a8737cb9dccf673dc56}{echo\+\_\+cmd}} (char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}args)
+\begin{DoxyCompactList}\small\item\em Prints the given arguments to the standard output. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{functions_8h_af7eac76b32b0e9587cab2c2a402e6fc7}{exit\+\_\+cmd}} ()
+\begin{DoxyCompactList}\small\item\em Exits the shell. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{functions_8h_a02a85854505e4af389e6bcef12c2884b}{export\+\_\+cmd}} (char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}args)
+\begin{DoxyCompactList}\small\item\em Creates or modifies an environment variable. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{functions_8h_a401c094b7ec5cfcc4e6f5350937fa39f}{parse\+\_\+command}} (char \texorpdfstring{$\ast$}{*}line, \mbox{\hyperlink{structParsedCommand}{Parsed\+Command}} \texorpdfstring{$\ast$}{*}result)
+\begin{DoxyCompactList}\small\item\em Parses an input line into up to MAX\+\_\+\+CMDS commands. Splits only on the logical operator "{}\&\&"{}; leaves pipes intact to be handled downstream. Background execution is detected via a trailing \textquotesingle{}\&\textquotesingle{}. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{functions_8h_a25b87e28d4ca41e97b1bc7013163dbc4}{execute\+\_\+command}} (\mbox{\hyperlink{structParsedCommand}{Parsed\+Command}} \texorpdfstring{$\ast$}{*}command)
+\begin{DoxyCompactList}\small\item\em Execute the \doxylink{structParsedCommand}{Parsed\+Command} produced by parse\+\_\+command. Runs single commands directly or multiple commands sequentially. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{functions_8h_abec9b3b512bceca1db0b78f1f457b917}{execute\+\_\+single\+\_\+command}} (\mbox{\hyperlink{structCommand}{Command}} \texorpdfstring{$\ast$}{*}cmd, int background)
+\begin{DoxyCompactList}\small\item\em Execute one command (builtin, pipeline, or external) with redirections. Pipelines are delegated to {\ttfamily sh -\/c} when present in {\ttfamily pipeline\+\_\+cmd}. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{functions_8h_a61326e8ca2063c1d4e7f89f292f6a3d9}{init\+\_\+history\+\_\+directory}} ()
+\begin{DoxyCompactList}\small\item\em Initialize the initial working directory (to be called at startup). \end{DoxyCompactList}\item 
+FILE \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{functions_8h_a247cb1078477a1be1a4dbfa38e499088}{fopen\+\_\+history\+\_\+file}} (const char \texorpdfstring{$\ast$}{*}mode)
+\begin{DoxyCompactList}\small\item\em Opens the history file with the specified mode. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{functions_8h_ac6047fe7f27adbe3051b67924440d383}{save\+\_\+in\+\_\+history}} (const char \texorpdfstring{$\ast$}{*}command\+\_\+line)
+\begin{DoxyCompactList}\small\item\em Saves a command line to the history file. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{functions_8h_a7c7d573bf388c7e3371884b7f0f8885f}{load\+\_\+history}} (FILE \texorpdfstring{$\ast$}{*}history\+\_\+file)
+\begin{DoxyCompactList}\small\item\em Loads command history from the history file. \end{DoxyCompactList}\item 
+\Hypertarget{functions_8h_af6b826b072cad6dcf4d48573016470b9}\label{functions_8h_af6b826b072cad6dcf4d48573016470b9} 
+void {\bfseries delete\+\_\+history} ()
+\begin{DoxyCompactList}\small\item\em Deletes the history file. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Contains the declarations of the built-\/in shell functions. 
+
+
+
+\label{doc-func-members}
+\Hypertarget{functions_8h_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{functions_8h_a38992c8bfbd4d83469f0b73a3a20e59f}\index{functions.h@{functions.h}!cd\_cmd@{cd\_cmd}}
+\index{cd\_cmd@{cd\_cmd}!functions.h@{functions.h}}
+\doxysubsubsection{\texorpdfstring{cd\_cmd()}{cd\_cmd()}}
+{\footnotesize\ttfamily \label{functions_8h_a38992c8bfbd4d83469f0b73a3a20e59f} 
+int cd\+\_\+cmd (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{args}{}\end{DoxyParamCaption})}
+
+
+
+Changes the current directory. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em args} & Array of arguments where args\mbox{[}1\mbox{]} is the target directory. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+SUCCESS on success, FAILURE on failure. 
+\end{DoxyReturn}
+\Hypertarget{functions_8h_aaba64aa13f9e6a8737cb9dccf673dc56}\index{functions.h@{functions.h}!echo\_cmd@{echo\_cmd}}
+\index{echo\_cmd@{echo\_cmd}!functions.h@{functions.h}}
+\doxysubsubsection{\texorpdfstring{echo\_cmd()}{echo\_cmd()}}
+{\footnotesize\ttfamily \label{functions_8h_aaba64aa13f9e6a8737cb9dccf673dc56} 
+int echo\+\_\+cmd (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{args}{}\end{DoxyParamCaption})}
+
+
+
+Prints the given arguments to the standard output. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em args} & Array of arguments to be printed. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+SUCCESS on success, FAILURE on failure. 
+\end{DoxyReturn}
+\Hypertarget{functions_8h_a25b87e28d4ca41e97b1bc7013163dbc4}\index{functions.h@{functions.h}!execute\_command@{execute\_command}}
+\index{execute\_command@{execute\_command}!functions.h@{functions.h}}
+\doxysubsubsection{\texorpdfstring{execute\_command()}{execute\_command()}}
+{\footnotesize\ttfamily \label{functions_8h_a25b87e28d4ca41e97b1bc7013163dbc4} 
+int execute\+\_\+command (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structParsedCommand}{Parsed\+Command}} \texorpdfstring{$\ast$}{*}}]{command}{}\end{DoxyParamCaption})}
+
+
+
+Execute the \doxylink{structParsedCommand}{Parsed\+Command} produced by parse\+\_\+command. Runs single commands directly or multiple commands sequentially. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em command} & Parsed command bundle to execute. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+SUCCESS on success, FAILURE if any command fails.
+\end{DoxyReturn}
+Execute the \doxylink{structParsedCommand}{Parsed\+Command} produced by parse\+\_\+command. Runs single commands directly or multiple commands sequentially.
+
+
+\begin{DoxyParams}{Parameters}
+{\em command} & Pointer to the parsed command structure. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+SUCCESS on success, FAILURE on failure. 
+\end{DoxyReturn}
+\Hypertarget{functions_8h_abec9b3b512bceca1db0b78f1f457b917}\index{functions.h@{functions.h}!execute\_single\_command@{execute\_single\_command}}
+\index{execute\_single\_command@{execute\_single\_command}!functions.h@{functions.h}}
+\doxysubsubsection{\texorpdfstring{execute\_single\_command()}{execute\_single\_command()}}
+{\footnotesize\ttfamily \label{functions_8h_abec9b3b512bceca1db0b78f1f457b917} 
+int execute\+\_\+single\+\_\+command (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structCommand}{Command}} \texorpdfstring{$\ast$}{*}}]{cmd}{, }\item[{int}]{background}{}\end{DoxyParamCaption})}
+
+
+
+Execute one command (builtin, pipeline, or external) with redirections. Pipelines are delegated to {\ttfamily sh -\/c} when present in {\ttfamily pipeline\+\_\+cmd}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em cmd} & \doxylink{structCommand}{Command} to execute. \\
+\hline
+{\em background} & 1 to avoid waiting, 0 to wait for completion. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+SUCCESS on success, FAILURE on failure.
+\end{DoxyReturn}
+Execute one command (builtin, pipeline, or external) with redirections. Pipelines are delegated to {\ttfamily sh -\/c} when present in {\ttfamily pipeline\+\_\+cmd}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em cmd} & Pointer to the command to execute. \\
+\hline
+{\em background} & 1 if background, 0 otherwise. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+SUCCESS on success, FAILURE on failure. 
+\end{DoxyReturn}
+\Hypertarget{functions_8h_af7eac76b32b0e9587cab2c2a402e6fc7}\index{functions.h@{functions.h}!exit\_cmd@{exit\_cmd}}
+\index{exit\_cmd@{exit\_cmd}!functions.h@{functions.h}}
+\doxysubsubsection{\texorpdfstring{exit\_cmd()}{exit\_cmd()}}
+{\footnotesize\ttfamily \label{functions_8h_af7eac76b32b0e9587cab2c2a402e6fc7} 
+int exit\+\_\+cmd (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Exits the shell. 
+
+\begin{DoxyReturn}{Returns}
+EXIT\+\_\+\+SUCCESS. 
+\end{DoxyReturn}
+\Hypertarget{functions_8h_a02a85854505e4af389e6bcef12c2884b}\index{functions.h@{functions.h}!export\_cmd@{export\_cmd}}
+\index{export\_cmd@{export\_cmd}!functions.h@{functions.h}}
+\doxysubsubsection{\texorpdfstring{export\_cmd()}{export\_cmd()}}
+{\footnotesize\ttfamily \label{functions_8h_a02a85854505e4af389e6bcef12c2884b} 
+int export\+\_\+cmd (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{args}{}\end{DoxyParamCaption})}
+
+
+
+Creates or modifies an environment variable. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em args} & Array of arguments where args\mbox{[}1\mbox{]} is VAR=value. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+SUCCESS on success, FAILURE on failure. 
+\end{DoxyReturn}
+\Hypertarget{functions_8h_a247cb1078477a1be1a4dbfa38e499088}\index{functions.h@{functions.h}!fopen\_history\_file@{fopen\_history\_file}}
+\index{fopen\_history\_file@{fopen\_history\_file}!functions.h@{functions.h}}
+\doxysubsubsection{\texorpdfstring{fopen\_history\_file()}{fopen\_history\_file()}}
+{\footnotesize\ttfamily \label{functions_8h_a247cb1078477a1be1a4dbfa38e499088} 
+FILE \texorpdfstring{$\ast$}{*} fopen\+\_\+history\+\_\+file (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{mode}{}\end{DoxyParamCaption})}
+
+
+
+Opens the history file with the specified mode. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mode} & File open mode ("{}r"{}, "{}a"{}, etc.) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+FILE pointer on success, NULL on failure. 
+\end{DoxyReturn}
+\Hypertarget{functions_8h_a61326e8ca2063c1d4e7f89f292f6a3d9}\index{functions.h@{functions.h}!init\_history\_directory@{init\_history\_directory}}
+\index{init\_history\_directory@{init\_history\_directory}!functions.h@{functions.h}}
+\doxysubsubsection{\texorpdfstring{init\_history\_directory()}{init\_history\_directory()}}
+{\footnotesize\ttfamily \label{functions_8h_a61326e8ca2063c1d4e7f89f292f6a3d9} 
+int init\+\_\+history\+\_\+directory (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Initialize the initial working directory (to be called at startup). 
+
+\begin{DoxyReturn}{Returns}
+SUCCESS on success, FAILURE on failure. 
+\end{DoxyReturn}
+\Hypertarget{functions_8h_a7c7d573bf388c7e3371884b7f0f8885f}\index{functions.h@{functions.h}!load\_history@{load\_history}}
+\index{load\_history@{load\_history}!functions.h@{functions.h}}
+\doxysubsubsection{\texorpdfstring{load\_history()}{load\_history()}}
+{\footnotesize\ttfamily \label{functions_8h_a7c7d573bf388c7e3371884b7f0f8885f} 
+void load\+\_\+history (\begin{DoxyParamCaption}\item[{FILE \texorpdfstring{$\ast$}{*}}]{history\+\_\+file}{}\end{DoxyParamCaption})}
+
+
+
+Loads command history from the history file. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em history\+\_\+file} & File pointer to the opened history file. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{functions_8h_a401c094b7ec5cfcc4e6f5350937fa39f}\index{functions.h@{functions.h}!parse\_command@{parse\_command}}
+\index{parse\_command@{parse\_command}!functions.h@{functions.h}}
+\doxysubsubsection{\texorpdfstring{parse\_command()}{parse\_command()}}
+{\footnotesize\ttfamily \label{functions_8h_a401c094b7ec5cfcc4e6f5350937fa39f} 
+void parse\+\_\+command (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}}]{line}{, }\item[{\mbox{\hyperlink{structParsedCommand}{Parsed\+Command}} \texorpdfstring{$\ast$}{*}}]{result}{}\end{DoxyParamCaption})}
+
+
+
+Parses an input line into up to MAX\+\_\+\+CMDS commands. Splits only on the logical operator "{}\&\&"{}; leaves pipes intact to be handled downstream. Background execution is detected via a trailing \textquotesingle{}\&\textquotesingle{}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em line} & Raw input line (will not be modified). \\
+\hline
+{\em result} & Destination structure for parsed commands and operators.\\
+\hline
+\end{DoxyParams}
+Parses an input line into up to MAX\+\_\+\+CMDS commands. Splits only on the logical operator "{}\&\&"{}; leaves pipes intact to be handled downstream. Background execution is detected via a trailing \textquotesingle{}\&\textquotesingle{}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em line} & The command line input. \\
+\hline
+{\em result} & Pointer to a \doxylink{structParsedCommand}{Parsed\+Command} structure to store the parsed result. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{functions_8h_a16f927816b5eee716ff2ebcbcb229cdd}\index{functions.h@{functions.h}!pwd\_cmd@{pwd\_cmd}}
+\index{pwd\_cmd@{pwd\_cmd}!functions.h@{functions.h}}
+\doxysubsubsection{\texorpdfstring{pwd\_cmd()}{pwd\_cmd()}}
+{\footnotesize\ttfamily \label{functions_8h_a16f927816b5eee716ff2ebcbcb229cdd} 
+int pwd\+\_\+cmd (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Prints the current working directory. 
+
+\begin{DoxyReturn}{Returns}
+SUCCESS on success, FAILURE on failure. 
+\end{DoxyReturn}
+\Hypertarget{functions_8h_ac6047fe7f27adbe3051b67924440d383}\index{functions.h@{functions.h}!save\_in\_history@{save\_in\_history}}
+\index{save\_in\_history@{save\_in\_history}!functions.h@{functions.h}}
+\doxysubsubsection{\texorpdfstring{save\_in\_history()}{save\_in\_history()}}
+{\footnotesize\ttfamily \label{functions_8h_ac6047fe7f27adbe3051b67924440d383} 
+void save\+\_\+in\+\_\+history (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{command\+\_\+line}{}\end{DoxyParamCaption})}
+
+
+
+Saves a command line to the history file. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em command\+\_\+line} & The command line to save. \\
+\hline
+\end{DoxyParams}

@@ -1,33 +1,31 @@
-CC=gcc
-CFLAGS=-Wall -c
-LDFLAGS=-I ./include/
-
 SRC_DIR=./src
 INC_DIR=./include
 BIN_DIR=./bin
 DOC_DIR=./doc
 GCOV_DIR=./gcov
 
+CC=gcc
+CFLAGS=-Wall -c -I $(INC_DIR)
+LDFLAGS=-I $(INC_DIR)/
 GCOVFLAGS=-O0 --coverage -lgcov -Wall -g
 
 LCOV_REPORT=report.info
 
 SRC=$(wildcard $(SRC_DIR)/*.c)
 OBJ=$(SRC:.c=.o)
-EXECS=main
+EXECS=MiShell
 
 GEXEC=$(EXEC).cov
 
 AR_NAME=archive_$(EXEC).tar.gz
 
-
 all: $(EXECS)
     
 %.o:%.c
-	$(CC) $(CFLAGS) $< $(LDFLAGS) -o $@
+	$(CC) $(CFLAGS) $< -o $@
 
-fork_yourself: src/main.o
-	$(CC) -o $(BIN_DIR)/$@ -Wall $(LDFLAGS) src/main.o
+MiShell: $(OBJ)
+	$(CC) -o $(BIN_DIR)/$@ -Wall $(LDFLAGS) $(OBJ)
 
 $(GEXEC):
 	$(CC) $(GCOVFLAGS) -o $(GCOV_DIR)/$@ -Wall $(LDFLAGS) $(SRC)
